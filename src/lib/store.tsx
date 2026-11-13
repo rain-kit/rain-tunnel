@@ -97,6 +97,7 @@ function SettingsProvider({ children }: { children: ReactNode }) {
         logLevel: settings.logLevel,
         theme: settings.theme,
         language: settings.language,
+        terminal: settings.terminal,
         closeToTray: settings.closeToTray,
         silentStart: settings.silentStart,
         ...patch,

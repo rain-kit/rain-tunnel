@@ -76,6 +76,8 @@ const zhCN = {
 
   "card.duplicate": "复制一份",
   "card.duplicated": "已复制",
+  "card.copyEnv": "复制终端代理命令",
+  "card.envCopied": "已复制终端代理命令（{shell}）",
   "card.copySocks": "复制 SOCKS5 地址",
   "card.copyHttp": "复制 HTTP 代理地址",
   "card.dragSort": "拖动排序",
@@ -194,7 +196,9 @@ const zhCN = {
   "settings.theme.dark": "深色",
   "settings.language": "语言",
   "settings.language.system": "跟随系统",
-  "settings.startup": "启动与窗口",
+  "settings.general": "通用",
+  "settings.terminal": "终端类型",
+  "settings.terminalDesc": "复制终端代理命令时使用该终端的语法",  "settings.startup": "启动与窗口",
   "settings.autoLaunch": "开机自动启动",
   "settings.autoLaunchDesc": "登录系统后自动运行，配合“随程序启动”的隧道使用",
   "settings.silentStart": "静默启动",
@@ -233,6 +237,7 @@ const zhCN = {
   "err.config.logLevelInvalid": "日志级别无效：{value}",
   "err.config.themeInvalid": "主题无效：{value}",
   "err.config.languageInvalid": "语言无效：{value}",
+  "err.config.terminalInvalid": "终端类型无效：{value}",
 
   "err.tunnel.sshHostRequired": "SSH 服务器地址不能为空",
   "err.tunnel.sshUserRequired": "SSH 用户名不能为空",

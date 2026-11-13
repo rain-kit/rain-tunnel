@@ -116,6 +116,7 @@ export interface LogEntry {
 }
 
 export type ThemeMode = "system" | "light" | "dark";
+export type ShellType = "bash" | "fish" | "nushell" | "powershell" | "cmd";
 
 export interface Settings {
   logLevel: LogLevel;
@@ -123,6 +124,7 @@ export interface Settings {
   language: Language;
   /** 后端识别的系统语言，系统语言不受支持时为 en。 */
   systemLanguage: Locale;
+  terminal: ShellType;
   closeToTray: boolean;
   silentStart: boolean;
   autoLaunch: boolean;
@@ -131,4 +133,4 @@ export interface Settings {
   version: string;
 }
 
-export type SettingsInput = Pick<Settings, "logLevel" | "theme" | "language" | "closeToTray" | "silentStart">;
+export type SettingsInput = Pick<Settings, "logLevel" | "theme" | "language" | "terminal" | "closeToTray" | "silentStart">;

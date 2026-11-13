@@ -78,6 +78,8 @@ const zhTW: Messages = {
 
   "card.duplicate": "複製一份",
   "card.duplicated": "已複製",
+  "card.copyEnv": "複製終端機代理指令",
+  "card.envCopied": "已複製終端機代理指令（{shell}）",
   "card.copySocks": "複製 SOCKS5 位址",
   "card.copyHttp": "複製 HTTP 代理位址",
   "card.dragSort": "拖曳排序",
@@ -196,7 +198,9 @@ const zhTW: Messages = {
   "settings.theme.dark": "深色",
   "settings.language": "語言",
   "settings.language.system": "跟隨系統",
-  "settings.startup": "啟動與視窗",
+  "settings.general": "一般",
+  "settings.terminal": "終端機類型",
+  "settings.terminalDesc": "複製終端機代理指令時使用該終端機的語法",  "settings.startup": "啟動與視窗",
   "settings.autoLaunch": "開機自動啟動",
   "settings.autoLaunchDesc": "登入系統後自動執行，搭配「隨程式啟動」的隧道使用",
   "settings.silentStart": "靜默啟動",
@@ -234,6 +238,7 @@ const zhTW: Messages = {
   "err.config.logLevelInvalid": "日誌級別無效：{value}",
   "err.config.themeInvalid": "主題無效：{value}",
   "err.config.languageInvalid": "語言無效：{value}",
+  "err.config.terminalInvalid": "終端機類型無效：{value}",
 
   "err.tunnel.sshHostRequired": "SSH 伺服器位址不能為空",
   "err.tunnel.sshUserRequired": "SSH 使用者名稱不能為空",

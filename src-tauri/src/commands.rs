@@ -115,6 +115,7 @@ pub struct SettingsView {
     theme: String,
     language: String,
     system_language: &'static str,
+    terminal: String,
     close_to_tray: bool,
     silent_start: bool,
     auto_launch: bool,
@@ -129,6 +130,7 @@ pub struct SettingsInput {
     log_level: String,
     theme: String,
     language: String,
+    terminal: String,
     close_to_tray: bool,
     silent_start: bool,
 }
@@ -140,6 +142,7 @@ fn settings_view(app: &AppHandle, s: &AppState) -> SettingsView {
         theme: cfg.ui.theme,
         language: cfg.ui.language,
         system_language: i18n::system().tag(),
+        terminal: cfg.ui.terminal,
         close_to_tray: cfg.app.close_to_tray,
         silent_start: cfg.app.silent_start,
         auto_launch: app.autolaunch().is_enabled().unwrap_or(false),
@@ -160,6 +163,7 @@ pub async fn settings_save(app: AppHandle, s: S<'_>, input: SettingsInput) -> Ap
     cfg.system.log_level = input.log_level;
     cfg.ui.theme = input.theme;
     cfg.ui.language = input.language;
+    cfg.ui.terminal = input.terminal;
     cfg.app.close_to_tray = input.close_to_tray;
     cfg.app.silent_start = input.silent_start;
     cfg.validate().map_err(|e| error::PARAM_INVALID.msg(e))?;
@@ -169,7 +173,7 @@ pub async fn settings_save(app: AppHandle, s: S<'_>, input: SettingsInput) -> Ap
     window::apply_theme(&app, &cfg.ui.theme);
     i18n::set(&cfg.ui.language);
     tray::refresh_soon(&app);
-    info!(level = %cfg.system.log_level, theme = %cfg.ui.theme, language = %cfg.ui.language, close_to_tray = cfg.app.close_to_tray, silent_start = cfg.app.silent_start, "设置已保存");
+    info!(level = %cfg.system.log_level, theme = %cfg.ui.theme, language = %cfg.ui.language, terminal = %cfg.ui.terminal, close_to_tray = cfg.app.close_to_tray, silent_start = cfg.app.silent_start, "设置已保存");
     *s.config.lock().unwrap() = cfg;
     Ok(settings_view(&app, &s))
 }

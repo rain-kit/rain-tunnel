@@ -1,9 +1,9 @@
-import { ArrowDown, ArrowRight, ArrowUp, Copy, CopyPlus, GripVertical, Link2, MoreHorizontal, Pencil, Play, Square, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowRight, ArrowUp, Copy, CopyPlus, GripVertical, Link2, MoreHorizontal, Pencil, Play, Square, Terminal, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { tunnelApi } from "../lib/api";
-import { formatBytes, formatDuration, isActive, proxyUrl, routeOf } from "../lib/format";
+import { formatBytes, formatDuration, isActive, isWindows, proxyEnvCommand, proxyUrl, routeOf, shellLabel } from "../lib/format";
 import { useI18n } from "../lib/i18n";
-import { useToast } from "../lib/store";
+import { useSettings, useToast } from "../lib/store";
 import type { TunnelView } from "../lib/types";
 import { StatusBadge, TypeBadge } from "./badges";
 import { Button, Card, Confirm, cx, IconButton, Menu, type MenuItem } from "./ui";
@@ -18,6 +18,7 @@ interface Props {
 export default function TunnelCard({ tunnel, onEdit, dragging, dragHandle }: Props) {
   const { t, tm, tx } = useI18n();
   const toast = useToast();
+  const shell = useSettings().settings?.terminal ?? (isWindows ? "powershell" : "bash");
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const route = routeOf(tunnel);
@@ -36,10 +37,10 @@ export default function TunnelCard({ tunnel, onEdit, dragging, dragHandle }: Pro
     }
   };
 
-  const copy = async (text: string) => {
+  const copy = async (text: string, ok = t("common.copiedText", { text })) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(t("common.copiedText", { text }));
+      toast.success(ok);
     } catch (e) {
       toast.error(e);
     }
@@ -54,6 +55,11 @@ export default function TunnelCard({ tunnel, onEdit, dragging, dragHandle }: Pro
     },
   ];
   if (tunnel.type === "dynamic") {
+    items.push({
+      label: t("card.copyEnv"),
+      icon: <Terminal size={14} />,
+      onClick: () => copy(proxyEnvCommand(tunnel, shell), t("card.envCopied", { shell: shellLabel[shell] })),
+    });
     items.push({ label: t("card.copySocks"), icon: <Link2 size={14} />, onClick: () => copy(proxyUrl(tunnel)) });
     if (tunnel.enableHttp) {
       items.push({ label: t("card.copyHttp"), icon: <Copy size={14} />, onClick: () => copy(proxyUrl(tunnel, "http")) });

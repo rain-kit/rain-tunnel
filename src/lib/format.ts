@@ -1,5 +1,5 @@
 import { t } from "./i18n";
-import type { TunnelState, TunnelType, TunnelView } from "./types";
+import type { ShellType, TunnelState, TunnelType, TunnelView } from "./types";
 
 export function formatBytes(n: number, fractionDigits = 1): string {
   if (!Number.isFinite(n) || n < 0) n = 0;
@@ -70,6 +70,44 @@ export function proxyUrl(t: TunnelView, scheme: "socks5" | "http" = "socks5"): s
   let addr = t.status?.listenAddr || hostPort(t.listenHost, t.listenPort);
   addr = addr.replace(/^0\.0\.0\.0:/, "127.0.0.1:").replace(/^\[::\]:/, "127.0.0.1:");
   return `${scheme}://${addr}`;
+}
+
+export const shellLabel: Record<ShellType, string> = {
+  bash: "Bash / Zsh",
+  fish: "Fish",
+  nushell: "Nushell",
+  powershell: "PowerShell",
+  cmd: "CMD",
+};
+
+/** 当前系统可选的终端，与 src-tauri/src/config.rs 的 TERMINALS 一致。 */
+export const shellOptions = (): ShellType[] =>
+  isWindows ? ["powershell", "cmd", "bash", "fish", "nushell"] : ["bash", "fish", "nushell"];
+
+/**
+ * 把动态转发设为终端代理的命令，格式参考 Clash Verge Rev 的“复制环境变量”。
+ * 开启 HTTP 代理时 http(s)_proxy 用 HTTP，all_proxy 始终用 SOCKS5。
+ */
+export function proxyEnvCommand(t: TunnelView, shell: ShellType): string {
+  const socks = proxyUrl(t);
+  const http = proxyUrl(t, "http");
+  const vars: [string, string][] = t.enableHttp ? [["http_proxy", http], ["https_proxy", http]] : [];
+  vars.push(["all_proxy", socks]);
+  // IPv6 地址带 []，zsh 会当成通配符。
+  const q = (v: string) => (/[[\]]/.test(v) ? `"${v}"` : v);
+  switch (shell) {
+    case "powershell":
+      return vars.map(([k, v]) => `$env:${k.toUpperCase()}="${v}"`).join("; ");
+    case "cmd":
+      // 引号包住整个赋值，避免 & 前的空格进入变量值。
+      return vars.map(([k, v]) => `set "${k.toUpperCase()}=${v}"`).join(" & ");
+    case "fish":
+      return vars.map(([k, v]) => `set -gx ${k} ${q(v)}`).join("; ");
+    case "nushell":
+      return `load-env {${vars.map(([k, v]) => `${k}: "${v}"`).join(", ")}}`;
+    default:
+      return `export ${vars.map(([k, v]) => `${k}=${q(v)}`).join(" ")}`;
+  }
 }
 
 export const isActive = (s: TunnelState) => s !== "stopped";

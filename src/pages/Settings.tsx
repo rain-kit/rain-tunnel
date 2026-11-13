@@ -3,9 +3,10 @@ import type { ReactNode } from "react";
 import TitleBar from "../components/TitleBar";
 import { Button, Card, Segmented, Select, SwitchRow } from "../components/ui";
 import { settingsApi } from "../lib/api";
+import { shellLabel, shellOptions } from "../lib/format";
 import { useI18n, type Language } from "../lib/i18n";
 import { useSettings, useToast } from "../lib/store";
-import type { LogLevel, SettingsInput, ThemeMode } from "../lib/types";
+import type { LogLevel, SettingsInput, ShellType, ThemeMode } from "../lib/types";
 
 function Group({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -64,6 +65,17 @@ export default function Settings() {
                   { value: "zh-TW", label: "繁體中文" },
                   { value: "en", label: "English" },
                 ]}
+              />
+            </Row>
+          </Group>
+
+          <Group title={t("settings.general")}>
+            <Row title={t("settings.terminal")} desc={t("settings.terminalDesc")}>
+              <Select<ShellType>
+                className="w-36"
+                value={s.terminal}
+                onChange={(terminal) => update({ terminal })}
+                options={shellOptions().map((v) => ({ value: v, label: shellLabel[v] }))}
               />
             </Row>
           </Group>

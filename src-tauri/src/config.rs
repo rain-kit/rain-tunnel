@@ -30,12 +30,18 @@ pub struct UiConfig {
     pub theme: String,
     /// 界面语言 system/zh-CN/zh-TW/en
     pub language: String,
+    /// 复制命令时使用的终端 bash/fish/nushell，Windows 另有 powershell/cmd
+    pub terminal: String,
 }
 
 impl Default for UiConfig {
     fn default() -> Self {
-        UiConfig { theme: "system".into(), language: "system".into() }
+        UiConfig { theme: "system".into(), language: "system".into(), terminal: default_terminal().into() }
     }
+}
+
+pub fn default_terminal() -> &'static str {
+    if cfg!(windows) { "powershell" } else { "bash" }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -64,6 +70,10 @@ pub struct AppConfig {
 
 pub const LOG_LEVELS: [&str; 4] = ["debug", "info", "warn", "error"];
 pub const THEMES: [&str; 3] = ["system", "light", "dark"];
+#[cfg(windows)]
+pub const TERMINALS: &[&str] = &["powershell", "cmd", "bash", "fish", "nushell"];
+#[cfg(not(windows))]
+pub const TERMINALS: &[&str] = &["bash", "fish", "nushell"];
 
 impl AppConfig {
     pub fn validate(&self) -> Result<(), Msg> {
@@ -75,6 +85,9 @@ impl AppConfig {
         }
         if !LANGUAGES.contains(&self.ui.language.as_str()) {
             return Err(msg!("err.config.languageInvalid", "语言无效: {value}", value = self.ui.language));
+        }
+        if !TERMINALS.contains(&self.ui.terminal.as_str()) {
+            return Err(msg!("err.config.terminalInvalid", "终端类型无效: {value}", value = self.ui.terminal));
         }
         Ok(())
     }
@@ -91,6 +104,9 @@ impl AppConfig {
         }
         if let Some(v) = var("UI_LANGUAGE") {
             self.ui.language = v;
+        }
+        if let Some(v) = var("UI_TERMINAL") {
+            self.ui.terminal = v.to_ascii_lowercase();
         }
         if let Some(v) = var("APP_CLOSETOTRAY") {
             self.app.close_to_tray = flag(v);
@@ -127,6 +143,9 @@ pub fn load(data_dir: &Path) -> Result<AppConfig, String> {
     }
     if !LANGUAGES.contains(&cfg.ui.language.as_str()) {
         cfg.ui.language = "system".into();
+    }
+    if !TERMINALS.contains(&cfg.ui.terminal.as_str()) {
+        cfg.ui.terminal = default_terminal().into();
     }
     Ok(cfg)
 }

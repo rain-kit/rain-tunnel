@@ -82,6 +82,8 @@ const en: Messages = {
 
   "card.duplicate": "Duplicate",
   "card.duplicated": "Duplicated",
+  "card.copyEnv": "Copy terminal proxy command",
+  "card.envCopied": "Terminal proxy command copied ({shell})",
   "card.copySocks": "Copy SOCKS5 address",
   "card.copyHttp": "Copy HTTP proxy address",
   "card.dragSort": "Drag to reorder",
@@ -204,7 +206,9 @@ const en: Messages = {
   "settings.theme.dark": "Dark",
   "settings.language": "Language",
   "settings.language.system": "System",
-  "settings.startup": "Startup & Window",
+  "settings.general": "General",
+  "settings.terminal": "Terminal",
+  "settings.terminalDesc": "Syntax used when copying the terminal proxy command",  "settings.startup": "Startup & Window",
   "settings.autoLaunch": "Launch at login",
   "settings.autoLaunchDesc": "Run automatically after signing in; works with tunnels set to “Start with app”",
   "settings.silentStart": "Start silently",
@@ -242,6 +246,7 @@ const en: Messages = {
   "err.config.logLevelInvalid": "Invalid log level: {value}",
   "err.config.themeInvalid": "Invalid theme: {value}",
   "err.config.languageInvalid": "Invalid language: {value}",
+  "err.config.terminalInvalid": "Invalid terminal: {value}",
 
   "err.tunnel.sshHostRequired": "SSH server address is required",
   "err.tunnel.sshUserRequired": "SSH username is required",
