@@ -76,7 +76,7 @@ Linux 上使用 `sudo apt install ./<檔名>.deb` 或 `sudo dnf install ./<檔�
 
 準備環境：
 
-- [Node.js](https://nodejs.org/) 20.19+ 或 22.12+
+- [Node.js](https://nodejs.org/) 22.12+
 - [Rust](https://www.rust-lang.org/tools/install) 1.85+（stable）
 - 對應平台的 [Tauri 相依套件](https://tauri.app/start/prerequisites/)
 

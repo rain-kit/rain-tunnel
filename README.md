@@ -76,7 +76,7 @@ Set the `SSH_TUNNEL_DATA_DIR` environment variable to use a different data folde
 
 Prerequisites:
 
-- [Node.js](https://nodejs.org/) 20.19+ or 22.12+
+- [Node.js](https://nodejs.org/) 22.12+
 - [Rust](https://www.rust-lang.org/tools/install) 1.85+ (stable)
 - The [Tauri prerequisites](https://tauri.app/start/prerequisites/) for your platform
 

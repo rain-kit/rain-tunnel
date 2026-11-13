@@ -29,6 +29,14 @@ Rain Tunnel：基于 Tauri 2 的 SSH 隧道管理工具。后端 Rust 在 `src-t
 2. `ChangeLog.md` 中有对应的 `## vX.Y.Z` 一节。
 3. 推送 `vX.Y.Z` 标签，标签与 `tauri.conf.json` 的版本不一致时发布会失败。
 
+## 依赖管理（必须）
+
+每次增加、删除或升级 npm 依赖，都要同步更新 `package-lock.json`，并和 `package.json` 一起提交。CI 用 `npm ci` 安装依赖，两者不一致时所有平台都会在安装依赖这一步失败。
+
+- 用和 CI 相同版本的 npm 更新锁文件：`npx -y npm@<版本> install --package-lock-only`。CI 使用 Node LTS 自带的 npm，版本见 GitHub Actions 日志中 `Setup Node` 步骤的输出（目前是 `11.20.0`）。本地 npm 较旧时可能漏写只在部分平台安装的可选依赖，本地能装、CI 却报 `Missing: xxx from lock file`；版本过新则会生成和 CI 不一致的锁文件。
+- 提交前验证锁文件：`npx -y npm@<版本> ci --dry-run --ignore-scripts`，没有报错才算通过。
+- 不要手动编辑 `package-lock.json`。
+
 ## 改动后的检查
 
 - 前端：`npx tsc --noEmit`
