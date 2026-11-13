@@ -8,7 +8,7 @@ Languages: English · [简体中文](./docs/README_zh-CN.md) · [繁體中文](.
 
 [![Release](https://img.shields.io/github/v/release/rain-kit/rain-tunnel?style=flat-square)](https://github.com/rain-kit/rain-tunnel/releases)
 [![Downloads](https://img.shields.io/github/downloads/rain-kit/rain-tunnel/total?style=flat-square)](https://github.com/rain-kit/rain-tunnel/releases)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-blue?style=flat-square)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue?style=flat-square)
 
 ## Install
 
@@ -17,7 +17,15 @@ Go to the [Release page](https://github.com/rain-kit/rain-tunnel/releases) to do
 | Platform | Architecture | File |
 | :------- | :----------- | :--- |
 | Windows 10 / 11 | x64 | `Rain.Tunnel_x.y.z_x64-setup.exe` |
+| Windows 11 | ARM64 | `Rain.Tunnel_x.y.z_arm64-setup.exe` |
 | macOS | Apple Silicon (M series) | `Rain.Tunnel_x.y.z_aarch64.dmg` |
+| macOS | Intel | `Rain.Tunnel_x.y.z_x64.dmg` |
+| Debian / Ubuntu | x64 | `Rain.Tunnel_x.y.z_amd64.deb` |
+| Debian / Ubuntu | ARM64 | `Rain.Tunnel_x.y.z_arm64.deb` |
+| RHEL / Fedora / CentOS | x64 | `Rain.Tunnel-x.y.z-1.x86_64.rpm` |
+| RHEL / Fedora / CentOS | ARM64 | `Rain.Tunnel-x.y.z-1.aarch64.rpm` |
+
+On Linux, install with `sudo apt install ./<file>.deb` or `sudo dnf install ./<file>.rpm`.
 
 > [!NOTE]
 > The installers are not code-signed yet.
@@ -38,7 +46,7 @@ Go to the [Release page](https://github.com/rain-kit/rain-tunnel/releases) to do
 - **Flexible authentication**: password, private key (with passphrase), or the system SSH agent.
 - **Safe by default**
   - Server fingerprints are verified on first connection and saved to `known_hosts`. Connections are refused if the fingerprint changes.
-  - Passwords are stored in the system credential store (Windows Credential Manager / macOS Keychain), never in config files.
+  - Passwords are stored in the system credential store (Windows Credential Manager / macOS Keychain / Linux Secret Service), never in config files.
   - A proxy listening on a non-loopback address must have authentication enabled.
 - **Reliable connections**: automatic reconnect, keepalive, idle timeout and a per-tunnel connection limit.
 - **Live monitoring**: real-time traffic chart, per-tunnel traffic statistics, and a list of active connections that you can close one by one.
@@ -53,6 +61,7 @@ All data stays on your own device. The data folder is:
 
 - Windows: `%AppData%\ssh-tunnel`
 - macOS: `~/Library/Application Support/ssh-tunnel`
+- Linux: `~/.config/ssh-tunnel`
 
 | File | Contents |
 | :--- | :------- |
@@ -88,7 +97,7 @@ cargo test
 
 ### Release
 
-Pushing a tag that starts with `v` triggers [GitHub Actions](./.github/workflows/release.yml), which builds the Windows x64 and macOS Apple Silicon installers and publishes them to Releases.
+Pushing a tag that starts with `v` triggers [GitHub Actions](./.github/workflows/release.yml), which builds installers for Windows, macOS and Linux (x64 and ARM64 each) and publishes them to Releases. Pushing to `main` only compiles, which checks the build and warms the cache for the next release.
 
 1. Update the version in `package.json`, `src-tauri/tauri.conf.json` and `src-tauri/Cargo.toml`.
 2. Commit, then create and push a matching tag:

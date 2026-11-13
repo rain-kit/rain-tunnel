@@ -8,7 +8,7 @@ Languages: [English](../README.md) · [简体中文](./README_zh-CN.md) · 繁�
 
 [![Release](https://img.shields.io/github/v/release/rain-kit/rain-tunnel?style=flat-square)](https://github.com/rain-kit/rain-tunnel/releases)
 [![Downloads](https://img.shields.io/github/downloads/rain-kit/rain-tunnel/total?style=flat-square)](https://github.com/rain-kit/rain-tunnel/releases)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-blue?style=flat-square)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue?style=flat-square)
 
 ## 安裝
 
@@ -17,7 +17,15 @@ Languages: [English](../README.md) · [简体中文](./README_zh-CN.md) · 繁�
 | 平台 | 架構 | 檔案 |
 | :--- | :--- | :--- |
 | Windows 10 / 11 | x64 | `Rain.Tunnel_x.y.z_x64-setup.exe` |
+| Windows 11 | ARM64 | `Rain.Tunnel_x.y.z_arm64-setup.exe` |
 | macOS | Apple Silicon（M 系列晶片） | `Rain.Tunnel_x.y.z_aarch64.dmg` |
+| macOS | Intel | `Rain.Tunnel_x.y.z_x64.dmg` |
+| Debian / Ubuntu | x64 | `Rain.Tunnel_x.y.z_amd64.deb` |
+| Debian / Ubuntu | ARM64 | `Rain.Tunnel_x.y.z_arm64.deb` |
+| RHEL / Fedora / CentOS | x64 | `Rain.Tunnel-x.y.z-1.x86_64.rpm` |
+| RHEL / Fedora / CentOS | ARM64 | `Rain.Tunnel-x.y.z-1.aarch64.rpm` |
+
+Linux 上使用 `sudo apt install ./<檔名>.deb` 或 `sudo dnf install ./<檔名>.rpm` 安裝。
 
 > [!NOTE]
 > 安裝檔目前尚未進行程式碼簽署。
@@ -38,7 +46,7 @@ Languages: [English](../README.md) · [简体中文](./README_zh-CN.md) · 繁�
 - **多種驗證方式**：密碼、私鑰（支援私鑰密碼）、系統 SSH Agent。
 - **預設安全**
   - 首次連線時驗證伺服器指紋並儲存到 `known_hosts`，指紋變更時拒絕連線。
-  - 密碼儲存在系統認證資料庫（Windows 認證管理員 / macOS 鑰匙圈），不寫入設定檔。
+  - 密碼儲存在系統認證資料庫（Windows 認證管理員 / macOS 鑰匙圈 / Linux Secret Service），不寫入設定檔。
   - 代理監聽在非本機位址時，必須設定驗證。
 - **穩定連線**：斷線自動重新連線、心跳保活、閒置逾時、單條隧道最大連線數限制。
 - **即時監控**：即時流量圖、每條隧道的流量統計、作用中連線清單，可逐條中斷。
@@ -53,6 +61,7 @@ Languages: [English](../README.md) · [简体中文](./README_zh-CN.md) · 繁�
 
 - Windows：`%AppData%\ssh-tunnel`
 - macOS：`~/Library/Application Support/ssh-tunnel`
+- Linux：`~/.config/ssh-tunnel`
 
 | 檔案 | 內容 |
 | :--- | :--- |
@@ -88,7 +97,7 @@ cargo test
 
 ### 發布
 
-推送以 `v` 開頭的 tag 會觸發 [GitHub Actions](../.github/workflows/release.yml)，自動建置 Windows x64 與 macOS Apple Silicon 安裝檔並發布到 Releases。
+推送以 `v` 開頭的 tag 會觸發 [GitHub Actions](../.github/workflows/release.yml)，自動建置 Windows、macOS、Linux 的 x64 與 ARM64 安裝檔並發布到 Releases。推送到 `main` 時只編譯，用來檢查能否編譯成功，並為下次發布預熱快取。
 
 1. 修改 `package.json`、`src-tauri/tauri.conf.json`、`src-tauri/Cargo.toml` 中的版本號。
 2. 提交後，建立並推送對應的 tag：

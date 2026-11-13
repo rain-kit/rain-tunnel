@@ -1,7 +1,9 @@
-name: Release
+name: Build
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
 
@@ -9,8 +11,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: release-${{ github.ref }}
-  cancel-in-progress: false
+  group: build-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_type == 'branch' }}
 
 jobs:
   build:
@@ -23,10 +25,26 @@ jobs:
             platform: windows-latest
             target: x86_64-pc-windows-msvc
             bundles: nsis
+          - name: windows-arm64
+            platform: windows-latest
+            target: aarch64-pc-windows-msvc
+            bundles: nsis
           - name: macos-arm64
             platform: macos-latest
             target: aarch64-apple-darwin
             bundles: dmg
+          - name: macos-x64
+            platform: macos-latest
+            target: x86_64-apple-darwin
+            bundles: dmg
+          - name: linux-x64
+            platform: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            bundles: deb,rpm
+          - name: linux-arm64
+            platform: ubuntu-22.04-arm
+            target: aarch64-unknown-linux-gnu
+            bundles: deb,rpm
 
     runs-on: ${{ matrix.platform }}
 
@@ -34,7 +52,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+          cache: npm
+
       - name: Check tag matches app version
+        if: github.ref_type == 'tag'
         shell: bash
         run: |
           APP_VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
@@ -43,34 +68,58 @@ jobs:
             exit 1
           fi
 
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: lts/*
-          cache: npm
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential pkg-config file \
+            libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev \
+            libxdo-dev libssl-dev libdbus-1-dev patchelf
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
 
+      # Tag runs can only restore caches saved on the default branch, so only main saves.
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
           workspaces: './src-tauri -> target'
           key: ${{ matrix.target }}
+          save-if: ${{ github.ref_type == 'branch' }}
 
       - name: Install frontend dependencies
         run: npm ci --registry=https://registry.npmjs.org --replace-registry-host=always
 
+      - name: Build
+        if: github.ref_type == 'branch'
+        run: npx tauri build --target ${{ matrix.target }} --no-bundle
+
+      - name: Render release notes
+        if: github.ref_type == 'tag'
+        id: notes
+        shell: bash
+        run: |
+          {
+            echo 'body<<RELEASE_NOTES_EOF'
+            sed -e "s|{{version}}|${GITHUB_REF_NAME#v}|g" \
+                -e "s|{{tag}}|${GITHUB_REF_NAME}|g" \
+                -e "s|{{repo}}|${GITHUB_REPOSITORY}|g" \
+                .github/release-notes.md
+            echo 'RELEASE_NOTES_EOF'
+          } >> "$GITHUB_OUTPUT"
+
       - name: Build and publish
+        if: github.ref_type == 'tag'
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'Rain Tunnel ${{ github.ref_name }}'
-          releaseBody: 'Windows：下载 `.exe` 安装包（x64）。macOS：下载 `.dmg`（仅 Apple Silicon）。'
+          releaseBody: ${{ steps.notes.outputs.body }}
           releaseDraft: false
           prerelease: false
           args: --target ${{ matrix.target }} --bundles ${{ matrix.bundles }}
