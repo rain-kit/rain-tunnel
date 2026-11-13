@@ -6,9 +6,24 @@
 
 ## 📦 下载
 
-| 系统 | 安装包 |
-| :--- | :--- |
-| Windows 10 / 11 | [x64](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_x64-setup.exe) · [ARM64](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_arm64-setup.exe) |
-| macOS | [Apple Silicon](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_aarch64.dmg) · [Intel](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_x64.dmg) |
-| Debian / Ubuntu（.deb） | [x64](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_amd64.deb) · [ARM64](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_arm64.deb) |
-| Fedora / RHEL（.rpm） | [x64](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel-{{version}}-1.x86_64.rpm) · [ARM64](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel-{{version}}-1.aarch64.rpm) |
+### Windows 10 / 11
+
+[x64（常用）](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_x64-setup.exe) | [ARM64](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_arm64-setup.exe)
+
+### macOS
+
+[Apple Silicon（M 芯片）](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_aarch64.dmg) | [Intel](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_x64.dmg)
+
+如果提示"已损坏，无法打开"，在终端执行一次：
+
+```shell
+xattr -cr "/Applications/Rain Tunnel.app"
+```
+
+### Debian / Ubuntu（.deb）
+
+[x64（常用）](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_amd64.deb) | [ARM64](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_arm64.deb)
+
+### Fedora / RHEL（.rpm）
+
+[x64（常用）](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel-{{version}}-1.x86_64.rpm) | [ARM64](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel-{{version}}-1.aarch64.rpm)
