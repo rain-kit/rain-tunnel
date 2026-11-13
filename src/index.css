@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Segoe UI Variable Text", "Segoe UI", -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+  --font-mono: "Cascadia Mono", "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+
+  --color-accent: #1677ff;
+  --color-accent-hover: #0f63e0;
+  --color-up: #f59e0b;
+  --color-down: #10b981;
+
+  --color-canvas: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-subtle: #f1f3f6;
+  --color-line: #e5e7ec;
+  --color-ink: #1b1f27;
+  --color-muted: #6b7280;
+
+  --animate-pop: pop 0.14s ease-out;
+  --animate-fade: fade 0.14s ease-out;
+
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0.97) translateY(4px);
+    }
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+  }
+}
+
+@layer base {
+  .dark {
+    --color-canvas: #0f1115;
+    --color-surface: #171a20;
+    --color-subtle: #1f232b;
+    --color-line: #2a2f39;
+    --color-ink: #e6e8ec;
+    --color-muted: #8b93a1;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-ink font-sans text-sm antialiased select-none overflow-hidden;
+  }
+
+  input,
+  textarea,
+  .selectable {
+    @apply select-text;
+  }
+
+  button {
+    @apply cursor-default;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--color-muted) 35%, transparent);
+    border-radius: 10px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in srgb, var(--color-muted) 60%, transparent);
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
