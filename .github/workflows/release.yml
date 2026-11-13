@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Check tag matches app version
         shell: bash
@@ -44,7 +44,7 @@ jobs:
           fi
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: lts/*
           cache: npm
@@ -61,7 +61,7 @@ jobs:
           key: ${{ matrix.target }}
 
       - name: Install frontend dependencies
-        run: npm ci
+        run: npm ci --registry=https://registry.npmjs.org --replace-registry-host=always
 
       - name: Build and publish
         uses: tauri-apps/tauri-action@v0
