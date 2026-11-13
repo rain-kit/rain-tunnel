@@ -1,4 +1,4 @@
-//! 版本检测与更新：后台每小时查询 GitHub 上最新的正式版（不含预发布），用户点击更新时下载并安装。
+//! 版本检测与更新：后台每 6 小时查询 GitHub 上最新的正式版（不含预发布，可在设置中关闭），用户点击更新时下载并安装。
 
 use std::sync::Mutex;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -20,7 +20,7 @@ use crate::{events, tray, window};
 
 pub const RELEASES_URL: &str = "https://github.com/rain-kit/rain-tunnel/releases/latest";
 const LATEST_API: &str = "https://api.github.com/repos/rain-kit/rain-tunnel/releases/latest";
-const INTERVAL: Duration = Duration::from_secs(3600);
+const INTERVAL: Duration = Duration::from_secs(6 * 3600);
 /// 启动后稍等再检查，避开隧道自动启动的高峰。
 const FIRST_DELAY: Duration = Duration::from_secs(10);
 
@@ -319,7 +319,10 @@ pub fn spawn(app: AppHandle) {
     tauri::async_runtime::spawn(async move {
         tokio::time::sleep(FIRST_DELAY).await;
         loop {
-            let _ = check_now(&app, None).await;
+            let enabled = app.state::<AppState>().config.lock().unwrap().app.auto_check_update;
+            if enabled {
+                let _ = check_now(&app, None).await;
+            }
             tokio::time::sleep(INTERVAL).await;
         }
     });

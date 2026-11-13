@@ -119,6 +119,7 @@ pub struct SettingsView {
     terminal: String,
     close_to_tray: bool,
     silent_start: bool,
+    auto_check_update: bool,
     auto_launch: bool,
     data_dir: String,
     log_dir: String,
@@ -134,6 +135,7 @@ pub struct SettingsInput {
     terminal: String,
     close_to_tray: bool,
     silent_start: bool,
+    auto_check_update: bool,
 }
 
 fn settings_view(app: &AppHandle, s: &AppState) -> SettingsView {
@@ -146,6 +148,7 @@ fn settings_view(app: &AppHandle, s: &AppState) -> SettingsView {
         terminal: cfg.ui.terminal,
         close_to_tray: cfg.app.close_to_tray,
         silent_start: cfg.app.silent_start,
+        auto_check_update: cfg.app.auto_check_update,
         auto_launch: app.autolaunch().is_enabled().unwrap_or(false),
         data_dir: s.data_dir.display().to_string(),
         log_dir: s.log_dir().display().to_string(),
@@ -167,6 +170,8 @@ pub async fn settings_save(app: AppHandle, s: S<'_>, input: SettingsInput) -> Ap
     cfg.ui.terminal = input.terminal;
     cfg.app.close_to_tray = input.close_to_tray;
     cfg.app.silent_start = input.silent_start;
+    let check_enabled = input.auto_check_update && !cfg.app.auto_check_update;
+    cfg.app.auto_check_update = input.auto_check_update;
     cfg.validate().map_err(|e| error::PARAM_INVALID.msg(e))?;
     config::save(&s.data_dir, &cfg).map_err(|e| error::SETTING_SAVE_FAILED.cause(e))?;
 
@@ -174,8 +179,15 @@ pub async fn settings_save(app: AppHandle, s: S<'_>, input: SettingsInput) -> Ap
     window::apply_theme(&app, &cfg.ui.theme);
     i18n::set(&cfg.ui.language);
     tray::refresh_soon(&app);
-    info!(level = %cfg.system.log_level, theme = %cfg.ui.theme, language = %cfg.ui.language, terminal = %cfg.ui.terminal, close_to_tray = cfg.app.close_to_tray, silent_start = cfg.app.silent_start, "设置已保存");
+    info!(level = %cfg.system.log_level, theme = %cfg.ui.theme, language = %cfg.ui.language, terminal = %cfg.ui.terminal, close_to_tray = cfg.app.close_to_tray, silent_start = cfg.app.silent_start, auto_check_update = cfg.app.auto_check_update, "设置已保存");
     *s.config.lock().unwrap() = cfg;
+    // 重新打开时立即检查一次，后台循环最长要等 6 小时。
+    if check_enabled {
+        let app = app.clone();
+        tauri::async_runtime::spawn(async move {
+            let _ = update::check_now(&app, None).await;
+        });
+    }
     Ok(settings_view(&app, &s))
 }
 

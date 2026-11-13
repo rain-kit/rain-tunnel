@@ -216,6 +216,8 @@ const zhCN = {
     "隧道配置保存在 tunnels.json，程序设置在 config.yaml，已信任的服务器指纹在 known_hosts；密码保存在系统凭据库（Windows 凭据管理器 / macOS 钥匙串），不写入文件。",
   "settings.about": "关于",
   "settings.aboutDesc": "SSH 本地、远程、动态端口转发管理工具",
+  "settings.autoCheckUpdate": "自动检查更新",
+  "settings.autoCheckUpdateDesc": "自动检查新版本；关闭后仍可手动检查",
   "update.check": "检查更新",
   "update.checking": "检查中…",
   "update.update": "更新",

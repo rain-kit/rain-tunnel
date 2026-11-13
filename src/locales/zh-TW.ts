@@ -218,6 +218,8 @@ const zhTW: Messages = {
     "隧道設定儲存在 tunnels.json，程式設定在 config.yaml，已信任的伺服器指紋在 known_hosts；密碼儲存在系統認證資料庫（Windows 認證管理員 / macOS 鑰匙圈），不寫入檔案。",
   "settings.about": "關於",
   "settings.aboutDesc": "SSH 本機、遠端、動態連接埠轉送管理工具",
+  "settings.autoCheckUpdate": "自動檢查更新",
+  "settings.autoCheckUpdateDesc": "自動檢查新版本；關閉後仍可手動檢查",
   "update.check": "檢查更新",
   "update.checking": "檢查中…",
   "update.update": "更新",

@@ -27,6 +27,8 @@ Go to the [Release page](https://github.com/rain-kit/rain-tunnel/releases) to do
 
 On Linux, install with `sudo apt install ./<file>.deb` or `sudo dnf install ./<file>.rpm`.
 
+When you run a newer Windows installer over an existing installation, it recommends uninstalling the current version first. Choose "Do not uninstall" to install over it directly. Updating from inside the app skips this step. Your tunnels, settings and saved passwords are kept either way.
+
 > [!NOTE]
 > The installers are not code-signed yet.
 >
@@ -72,6 +74,13 @@ All data stays on your own device. The data folder is:
 
 Set the `SSH_TUNNEL_DATA_DIR` environment variable to use a different data folder, e.g. for portable use.
 
+## Privacy
+
+Rain Tunnel has no telemetry and does not collect personal data. It only makes these network connections:
+
+- To the SSH servers and target addresses of your tunnels, and from the clients that use your local ports and proxies.
+- To GitHub, to check for updates: the app automatically requests the latest release information from `api.github.com`. The request carries only the app version. Turn off "Check for updates automatically" in Settings to stop these checks; you can still check manually. When you choose to update, the installer is downloaded from GitHub Releases. GitHub sees your IP address as with any web request; see the [GitHub Privacy Statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement).
+
 ## Development
 
 Prerequisites:
@@ -112,6 +121,17 @@ Installers also produce signed in-app update packages and a `latest.json`, so bu
 
 The workflow fails if the tag does not match the version in `tauri.conf.json`.
 
+## Code signing policy
+
+Windows installers are to be signed through the SignPath Foundation's free program for open-source projects (application in progress):
+
+Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+
+- Committers and reviewers: [members of rain-kit](https://github.com/orgs/rain-kit/people)
+- Approvers: [owners of rain-kit](https://github.com/orgs/rain-kit/people?query=role%3Aowner)
+
+Only installers built by GitHub Actions from this repository are signed, and every release signing request must be approved by an approver.
+
 ## Contributions
 
 Issues and pull requests are welcome!
@@ -127,3 +147,7 @@ Rain Tunnel is built on these projects:
 - [vitejs/vite](https://github.com/vitejs/vite): Next generation frontend tooling.
 - [tailwindlabs/tailwindcss](https://github.com/tailwindlabs/tailwindcss): A utility-first CSS framework.
 - [lucide-icons/lucide](https://github.com/lucide-icons/lucide): Beautiful and consistent icons.
+
+## License
+
+[MIT](./LICENSE)

@@ -226,6 +226,8 @@ const en: Messages = {
     "Tunnels are saved in tunnels.json, app settings in config.yaml, and trusted server fingerprints in known_hosts. Passwords are kept in the system credential store (Windows Credential Manager / macOS Keychain), never in files.",
   "settings.about": "About",
   "settings.aboutDesc": "Manage SSH local, remote and dynamic port forwarding",
+  "settings.autoCheckUpdate": "Check for updates automatically",
+  "settings.autoCheckUpdateDesc": "Automatically check for new versions; you can still check manually when off",
   "update.check": "Check for updates",
   "update.checking": "Checking…",
   "update.update": "Update",

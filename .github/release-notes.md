@@ -10,6 +10,8 @@
 
 [x64（常用）](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_x64-setup.exe) | [ARM64](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_arm64-setup.exe)
 
+已安装旧版本时，安装程序会推荐先卸载，选择“请勿卸载”即可直接覆盖安装，隧道配置和密码都会保留。
+
 ### macOS
 
 [Apple Silicon（M 芯片）](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_aarch64.dmg) | [Intel](https://github.com/{{repo}}/releases/download/{{tag}}/Rain.Tunnel_{{version}}_x64.dmg)

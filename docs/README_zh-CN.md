@@ -27,6 +27,8 @@ Languages: [English](../README.md) · 简体中文 · [繁體中文](./README_zh
 
 Linux 上用 `sudo apt install ./<文件名>.deb` 或 `sudo dnf install ./<文件名>.rpm` 安装。
 
+在 Windows 上运行新版安装包时，如果已经装过旧版本，安装程序会推荐先卸载当前版本。选择“请勿卸载”即可直接覆盖安装；在应用内直接更新则不会出现这一步。无论选哪个，隧道配置、设置和已保存的密码都会保留。
+
 > [!NOTE]
 > 安装包目前还没有代码签名。
 >
@@ -72,6 +74,13 @@ Linux 上用 `sudo apt install ./<文件名>.deb` 或 `sudo dnf install ./<文�
 
 设置环境变量 `SSH_TUNNEL_DATA_DIR` 可以使用其他数据目录，例如便携使用。
 
+## 隐私
+
+Rain Tunnel 没有任何统计上报，不收集个人数据。只会产生以下网络连接：
+
+- 连接隧道配置中的 SSH 服务器和目标地址，以及接受使用本机端口和代理的客户端连接。
+- 访问 GitHub 检查更新：应用会自动向 `api.github.com` 请求最新版本信息，请求中只包含应用版本号。在设置中关闭“自动检查更新”即可停止，仍可手动检查。选择更新时，从 GitHub Releases 下载安装包。和访问任何网站一样，GitHub 能看到你的 IP 地址，详见 [GitHub 隐私声明](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement)。
+
 ## 开发
 
 准备环境：
@@ -109,6 +118,17 @@ cargo test
 
 如果 tag 与 `tauri.conf.json` 中的版本号不一致，工作流会直接失败。
 
+## 代码签名政策
+
+Windows 安装包将通过 SignPath Foundation 面向开源项目的免费计划签名（申请中）：
+
+Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+
+- 提交者和审核者：[rain-kit 成员](https://github.com/orgs/rain-kit/people)
+- 审批者：[rain-kit 所有者](https://github.com/orgs/rain-kit/people?query=role%3Aowner)
+
+只对 GitHub Actions 从本仓库构建的安装包签名，每次发布的签名请求都需要审批者批准。
+
 ## 贡献
 
 欢迎提交 Issue 和 Pull Request！
@@ -124,3 +144,7 @@ Rain Tunnel 基于以下项目构建：
 - [vitejs/vite](https://github.com/vitejs/vite)：下一代前端构建工具。
 - [tailwindlabs/tailwindcss](https://github.com/tailwindlabs/tailwindcss)：实用优先的 CSS 框架。
 - [lucide-icons/lucide](https://github.com/lucide-icons/lucide)：美观一致的图标库。
+
+## 许可证
+
+[MIT](../LICENSE)

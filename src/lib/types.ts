@@ -127,13 +127,17 @@ export interface Settings {
   terminal: ShellType;
   closeToTray: boolean;
   silentStart: boolean;
+  autoCheckUpdate: boolean;
   autoLaunch: boolean;
   dataDir: string;
   logDir: string;
   version: string;
 }
 
-export type SettingsInput = Pick<Settings, "logLevel" | "theme" | "language" | "terminal" | "closeToTray" | "silentStart">;
+export type SettingsInput = Pick<
+  Settings,
+  "logLevel" | "theme" | "language" | "terminal" | "closeToTray" | "silentStart" | "autoCheckUpdate"
+>;
 
 export interface UpdateInfo {
   current: string;

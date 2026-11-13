@@ -100,6 +100,7 @@ function SettingsProvider({ children }: { children: ReactNode }) {
         terminal: settings.terminal,
         closeToTray: settings.closeToTray,
         silentStart: settings.silentStart,
+        autoCheckUpdate: settings.autoCheckUpdate,
         ...patch,
       };
       setSettings({ ...settings, ...patch });

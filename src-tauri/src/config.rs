@@ -51,11 +51,13 @@ pub struct AppSection {
     pub close_to_tray: bool,
     /// 启动时不显示主窗口
     pub silent_start: bool,
+    /// 后台定时检查新版本；关闭后只能手动检查
+    pub auto_check_update: bool,
 }
 
 impl Default for AppSection {
     fn default() -> Self {
-        AppSection { close_to_tray: true, silent_start: false }
+        AppSection { close_to_tray: true, silent_start: false, auto_check_update: true }
     }
 }
 
@@ -111,11 +113,11 @@ impl AppConfig {
         if let Some(v) = var("APP_CLOSETOTRAY") {
             self.app.close_to_tray = flag(v);
         }
-        if let Some(v) = var("APP_CLOSETOTRAY") {
-            self.app.close_to_tray = flag(v);
-        }
         if let Some(v) = var("APP_SILENTSTART") {
             self.app.silent_start = flag(v);
+        }
+        if let Some(v) = var("APP_AUTOCHECKUPDATE") {
+            self.app.auto_check_update = flag(v);
         }
     }
 }
@@ -179,6 +181,7 @@ mod tests {
         assert_eq!(cfg.ui.theme, "dark");
         assert!(cfg.app.silent_start);
         assert!(cfg.app.close_to_tray, "缺省字段保持默认值");
+        assert!(cfg.app.auto_check_update, "缺省字段保持默认值");
     }
 
     #[test]

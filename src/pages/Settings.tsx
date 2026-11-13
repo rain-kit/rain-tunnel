@@ -161,6 +161,12 @@ export default function Settings() {
                 )}
               </div>
             </Row>
+            <SwitchRow
+              title={t("settings.autoCheckUpdate")}
+              desc={t("settings.autoCheckUpdateDesc")}
+              checked={s.autoCheckUpdate}
+              onChange={(autoCheckUpdate) => update({ autoCheckUpdate })}
+            />
           </Group>
         </div>
       </div>
