@@ -4,6 +4,9 @@ pub const TUNNEL_CHANGED: &str = "tunnel:changed";
 pub const TRAFFIC: &str = "traffic";
 pub const LOG: &str = "log";
 pub const HOST_KEY: &str = "hostkey:prompt";
+pub const UPDATE: &str = "update:status";
+pub const UPDATE_PROGRESS: &str = "update:progress";
+pub const UPDATE_OPEN: &str = "update:open";
 
 /// 业务层通过它通知界面，测试中可以替换成记录或空实现。
 pub trait EventSink: Send + Sync {

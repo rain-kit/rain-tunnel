@@ -12,6 +12,7 @@ import type {
   Traffic,
   TunnelStatus,
   TunnelView,
+  UpdateInfo,
 } from "./types";
 
 /** 后端命令失败时返回 { code, i18n, params }，见 src-tauri/src/error.rs。 */
@@ -70,6 +71,17 @@ export const logApi = {
   clear: () => invoke<void>("logs_clear"),
 };
 
+export const updateApi = {
+  status: () => invoke<UpdateInfo>("update_status"),
+  /** via 为动态转发隧道 ID 时经它访问 GitHub，为空时直接访问。 */
+  check: (via?: string) => invoke<UpdateInfo>("update_check", { via: via ?? null }),
+  /** 托盘是否请求打开更新页面，取出后清除。 */
+  takeOpenRequest: () => invoke<boolean>("update_take_open_request"),
+  /** 下载并安装，成功后程序会重启，不会正常返回。 */
+  install: (via?: string) => invoke<void>("update_install", { via: via ?? null }),
+  openReleasePage: () => invoke<void>("open_release_page"),
+};
+
 /** 后端推送的事件，见 src-tauri/src/events.rs。 */
 export const events = {
   onTunnelStatus: (fn: (s: TunnelStatus) => void) => sub<TunnelStatus>("tunnel:status", fn),
@@ -77,6 +89,9 @@ export const events = {
   onTraffic: (fn: (t: Traffic) => void) => sub<Traffic>("traffic", fn),
   onLog: (fn: (e: LogEntry) => void) => sub<LogEntry>("log", fn),
   onHostKey: (fn: (p: HostKeyPrompt) => void) => sub<HostKeyPrompt>("hostkey:prompt", fn),
+  onUpdate: (fn: (u: UpdateInfo) => void) => sub<UpdateInfo>("update:status", fn),
+  onUpdateProgress: (fn: (p: { downloaded: number; total?: number }) => void) => sub("update:progress", fn),
+  onUpdateOpen: (fn: () => void) => sub<null>("update:open", () => fn()),
 };
 
 /** 订阅事件，返回同步的取消函数，方便在 useEffect 中直接使用。 */

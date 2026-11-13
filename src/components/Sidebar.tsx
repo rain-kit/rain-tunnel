@@ -1,7 +1,7 @@
 import { ArrowDown, ArrowUp, Cable, Gauge, LayoutDashboard, ScrollText, Settings, type LucideIcon } from "lucide-react";
 import { formatBytes, formatSpeed, isMac } from "../lib/format";
 import { useI18n } from "../lib/i18n";
-import { useTraffic, useTunnels } from "../lib/store";
+import { useTraffic, useTunnels, useUpdate } from "../lib/store";
 import TrafficChart from "./TrafficChart";
 import { cx } from "./ui";
 
@@ -19,6 +19,7 @@ export default function Sidebar({ page, onChange }: { page: Page; onChange: (p: 
   const { t } = useI18n();
   const { tunnels } = useTunnels();
   const { current, history } = useTraffic();
+  const update = useUpdate().info;
   const connected = tunnels.filter((t) => t.status.state === "connected").length;
   const problems = tunnels.filter((t) => t.status.state === "failed" || t.status.state === "reconnecting").length;
 
@@ -53,6 +54,9 @@ export default function Sidebar({ page, onChange }: { page: Page; onChange: (p: 
               >
                 {connected}/{tunnels.length}
               </span>
+            )}
+            {id === "settings" && update?.hasUpdate && (
+              <span className="absolute right-4 size-2 rounded-full bg-red-500" title={t("update.found", { version: update.latest ?? "" })} />
             )}
           </button>
         ))}

@@ -54,6 +54,7 @@ impl From<Code> for ApiError {
 pub const SERVICE_ERROR: Code = Code(1, "err.service", "系统异常");
 pub const PARAM_INVALID: Code = Code(2, "err.paramInvalid", "请求参数错误");
 pub const OPEN_DIR_FAILED: Code = Code(3, "err.openDirFailed", "打开目录失败");
+pub const OPEN_URL_FAILED: Code = Code(4, "err.openUrlFailed", "打开链接失败");
 
 // -------------------- 隧道 100000 -------------------- //
 pub const TUNNEL_NOT_FOUND: Code = Code(100001, "err.tunnelNotFound", "隧道不存在");
@@ -70,3 +71,7 @@ pub const SECRET_READ_FAILED: Code = Code(100010, "err.secretReadFailed", "读�
 // -------------------- 设置 200000 -------------------- //
 pub const SETTING_SAVE_FAILED: Code = Code(200001, "err.settingSaveFailed", "保存设置失败");
 pub const AUTOSTART_FAILED: Code = Code(200002, "err.autostartFailed", "设置开机自启失败");
+pub const UPDATE_CHECK_FAILED: Code = Code(200003, "err.updateCheckFailed", "检查更新失败");
+pub const UPDATE_INSTALL_FAILED: Code = Code(200004, "err.updateInstallFailed", "更新失败");
+pub const UPDATE_NOT_AVAILABLE: Code = Code(200005, "err.updateNotAvailable", "没有可直接安装的新版本，请前往下载页更新");
+pub const UPDATE_TUNNEL_UNAVAILABLE: Code = Code(200006, "err.updateTunnelUnavailable", "所选隧道未连接，请换一种方式重试");

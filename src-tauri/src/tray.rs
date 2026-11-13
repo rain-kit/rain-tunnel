@@ -85,8 +85,18 @@ fn build_menu(app: &AppHandle) -> tauri::Result<(Menu<Wry>, String)> {
     let start_all = MenuItem::with_id(app, "start_all", pick(["全部启动", "全部啟動", "Start All"]), !list.is_empty(), None::<&str>)?;
     let stop_all = MenuItem::with_id(app, "stop_all", pick(["全部停止", "全部停止", "Stop All"]), running > 0, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", pick(["退出", "結束", "Quit"]), true, None::<&str>)?;
+    let update = match state.updater.info() {
+        crate::update::UpdateInfo { has_update: true, latest: Some(v), .. } => {
+            let text = tr!("发现新版本 v{v}", "發現新版本 v{v}", "Update available: v{v}");
+            Some(MenuItem::with_id(app, "update", text, true, None::<&str>)?)
+        }
+        _ => None,
+    };
 
     let mut items: Vec<&dyn IsMenuItem<Wry>> = vec![&show];
+    if let Some(u) = &update {
+        items.push(u);
+    }
     let sep1 = PredefinedMenuItem::separator(app)?;
     let sep2 = PredefinedMenuItem::separator(app)?;
     let sep3 = PredefinedMenuItem::separator(app)?;
@@ -112,6 +122,7 @@ fn on_menu(app: &AppHandle, id: &str) {
     match id {
         "show" => window::show_main(app),
         "quit" => app.exit(0),
+        "update" => crate::update::request_open(app),
         "start_all" => {
             tauri::async_runtime::spawn(async move {
                 for (name, err) in svc.start_all().await {

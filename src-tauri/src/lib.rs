@@ -13,6 +13,7 @@ pub mod service;
 pub mod store;
 pub mod traffic;
 pub mod tray;
+pub mod update;
 pub mod util;
 pub mod window;
 
@@ -39,6 +40,7 @@ pub fn run() {
         .plugin(tauri_plugin_autostart::init(MacosLauncher::LaunchAgent, None))
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .invoke_handler(tauri::generate_handler![
             commands::tunnel_list,
             commands::tunnel_get,
@@ -65,6 +67,11 @@ pub fn run() {
             commands::pick_key_file,
             commands::logs_list,
             commands::logs_clear,
+            commands::update_status,
+            commands::update_check,
+            commands::update_take_open_request,
+            commands::update_install,
+            commands::open_release_page,
         ])
         .setup(move |app| app::setup(app, data_dir, cfg, level))
         .build(tauri::generate_context!())

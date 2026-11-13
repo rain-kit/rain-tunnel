@@ -68,6 +68,20 @@ jobs:
             exit 1
           fi
 
+      # 更新内容取自 ChangeLog.md，缺少当前版本时在这里失败，不必等到编译完。
+      - name: Render release notes
+        if: github.ref_type == 'tag'
+        id: notes
+        shell: bash
+        run: |
+          node .github/scripts/release-notes.mjs "${GITHUB_REF_NAME}" "${GITHUB_REPOSITORY}" > release-notes.out
+          {
+            echo 'body<<RELEASE_NOTES_EOF'
+            cat release-notes.out
+            echo
+            echo 'RELEASE_NOTES_EOF'
+          } >> "$GITHUB_OUTPUT"
+
       - name: Install Linux dependencies
         if: runner.os == 'Linux'
         run: |
@@ -97,25 +111,14 @@ jobs:
         if: github.ref_type == 'branch'
         run: npx tauri build --target ${{ matrix.target }} --no-bundle
 
-      - name: Render release notes
-        if: github.ref_type == 'tag'
-        id: notes
-        shell: bash
-        run: |
-          {
-            echo 'body<<RELEASE_NOTES_EOF'
-            sed -e "s|{{version}}|${GITHUB_REF_NAME#v}|g" \
-                -e "s|{{tag}}|${GITHUB_REF_NAME}|g" \
-                -e "s|{{repo}}|${GITHUB_REPOSITORY}|g" \
-                .github/release-notes.md
-            echo 'RELEASE_NOTES_EOF'
-          } >> "$GITHUB_OUTPUT"
-
       - name: Build and publish
         if: github.ref_type == 'tag'
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 应用内更新包的签名私钥，公钥在 tauri.conf.json 的 plugins.updater.pubkey。
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'Rain Tunnel ${{ github.ref_name }}'

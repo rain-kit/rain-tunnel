@@ -1,3 +1,9 @@
+## 📝 更新内容
+
+<!-- changes:start -->
+{{changes}}
+<!-- changes:end -->
+
 ## 📦 下载
 
 | 系统 | 安装包 |

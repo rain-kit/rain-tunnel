@@ -1,11 +1,12 @@
-import { FolderOpen, Monitor, Moon, Sun } from "lucide-react";
+import { ArrowUpCircle, FolderOpen, Monitor, Moon, RefreshCw, Sun } from "lucide-react";
 import type { ReactNode } from "react";
 import TitleBar from "../components/TitleBar";
+import UpdateRouteMenu from "../components/UpdateRouteMenu";
 import { Button, Card, Segmented, Select, SwitchRow } from "../components/ui";
 import { settingsApi } from "../lib/api";
 import { shellLabel, shellOptions } from "../lib/format";
 import { useI18n, type Language } from "../lib/i18n";
-import { useSettings, useToast } from "../lib/store";
+import { useSettings, useToast, useUpdate } from "../lib/store";
 import type { LogLevel, SettingsInput, ShellType, ThemeMode } from "../lib/types";
 
 function Group({ title, children }: { title: string; children: ReactNode }) {
@@ -33,6 +34,8 @@ export default function Settings() {
   const { t } = useI18n();
   const { settings: s, save, setAutoLaunch } = useSettings();
   const toast = useToast();
+  const { info: updateInfo, checking, check, setDialogOpen } = useUpdate();
+  const newVersion = updateInfo?.hasUpdate ? updateInfo.latest : undefined;
   if (!s) return <TitleBar title={t("nav.settings")} />;
 
   const update = (patch: Partial<SettingsInput>) => save(patch).catch(toast.error);
@@ -132,8 +135,31 @@ export default function Settings() {
           </Group>
 
           <Group title={t("settings.about")}>
-            <Row title="Rain Tunnel" desc={t("settings.aboutDesc")}>
-              <span className="font-mono text-xs text-muted">v{s.version}</span>
+            <Row title="Rain Tunnel" desc={newVersion ? t("update.found", { version: newVersion }) : t("settings.aboutDesc")}>
+              <div className="flex items-center gap-3">
+                <span className="relative font-mono text-xs text-muted">
+                  v{s.version}
+                  {newVersion && <span className="absolute -top-1 -right-2 size-2 rounded-full bg-red-500" />}
+                </span>
+                <UpdateRouteMenu onPick={check}>
+                  {(open) => (
+                    <Button
+                      size="sm"
+                      icon={<RefreshCw size={13} className={checking ? "animate-spin" : undefined} />}
+                      disabled={checking}
+                      onClick={open}
+                      title={updateInfo?.checkedAt && t("update.lastChecked", { time: new Date(updateInfo.checkedAt).toLocaleString() })}
+                    >
+                      {t(checking ? "update.checking" : "update.check")}
+                    </Button>
+                  )}
+                </UpdateRouteMenu>
+                {newVersion && (
+                  <Button size="sm" variant="primary" icon={<ArrowUpCircle size={13} />} onClick={() => setDialogOpen(true)}>
+                    {t("update.update")}
+                  </Button>
+                )}
+              </div>
             </Row>
           </Group>
         </div>

@@ -134,3 +134,16 @@ export interface Settings {
 }
 
 export type SettingsInput = Pick<Settings, "logLevel" | "theme" | "language" | "terminal" | "closeToTray" | "silentStart">;
+
+export interface UpdateInfo {
+  current: string;
+  /** 尚未成功检查过时为空 */
+  latest?: string;
+  hasUpdate: boolean;
+  checkedAt?: string;
+  /** 最新版本的更新内容（Markdown） */
+  notes?: string;
+  publishedAt?: string;
+  /** 能否直接更新；没有当前平台的安装包或签名不对时只能前往下载页 */
+  canInstall: boolean;
+}

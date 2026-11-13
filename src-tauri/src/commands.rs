@@ -16,6 +16,7 @@ use crate::error::{self, ApiResult};
 use crate::i18n::{self, Msg};
 use crate::model::{ConnectionView, HostKeyPrompt, LogEntry, SaveTunnelReq, Traffic, TunnelView};
 use crate::traffic::TrafficPoint;
+use crate::update::{self, UpdateInfo};
 use crate::{tray, window};
 
 type S<'a> = State<'a, AppState>;
@@ -230,4 +231,30 @@ pub async fn logs_list() -> ApiResult<Vec<LogEntry>> {
 pub async fn logs_clear() -> ApiResult<()> {
     crate::logging::ring().clear();
     Ok(())
+}
+
+#[tauri::command]
+pub async fn update_status(s: S<'_>) -> ApiResult<UpdateInfo> {
+    Ok(s.updater.info())
+}
+
+#[tauri::command]
+pub async fn update_check(app: AppHandle, via: Option<String>) -> ApiResult<UpdateInfo> {
+    update::check_now(&app, update::proxy(&app, via.as_deref())?).await
+}
+
+/// 是否有待打开的更新页面请求（来自托盘），取出后清除。
+#[tauri::command]
+pub async fn update_take_open_request(s: S<'_>) -> ApiResult<bool> {
+    Ok(s.updater.take_open_request())
+}
+
+#[tauri::command]
+pub async fn update_install(app: AppHandle, via: Option<String>) -> ApiResult<()> {
+    update::install(&app, update::proxy(&app, via.as_deref())?).await
+}
+
+#[tauri::command]
+pub async fn open_release_page(app: AppHandle) -> ApiResult<()> {
+    update::open_release_page(&app)
 }

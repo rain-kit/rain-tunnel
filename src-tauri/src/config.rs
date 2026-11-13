@@ -111,6 +111,9 @@ impl AppConfig {
         if let Some(v) = var("APP_CLOSETOTRAY") {
             self.app.close_to_tray = flag(v);
         }
+        if let Some(v) = var("APP_CLOSETOTRAY") {
+            self.app.close_to_tray = flag(v);
+        }
         if let Some(v) = var("APP_SILENTSTART") {
             self.app.silent_start = flag(v);
         }

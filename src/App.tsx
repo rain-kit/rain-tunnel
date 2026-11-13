@@ -3,6 +3,7 @@ import HostKeyDialog from "./components/HostKeyDialog";
 import Sidebar, { type Page } from "./components/Sidebar";
 import Toaster from "./components/Toaster";
 import TunnelEditor from "./components/TunnelEditor";
+import UpdateDialog from "./components/UpdateDialog";
 import type { TunnelView } from "./lib/types";
 import Connections from "./pages/Connections";
 import Home from "./pages/Home";
@@ -27,6 +28,7 @@ export default function App() {
       </main>
       <TunnelEditor open={editor.open} tunnel={editor.tunnel} onClose={() => setEditor((s) => ({ ...s, open: false }))} />
       <HostKeyDialog />
+      <UpdateDialog />
       <Toaster />
     </div>
   );

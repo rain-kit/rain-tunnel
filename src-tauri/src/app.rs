@@ -13,6 +13,7 @@ use crate::secrets::{KeyringBackend, Secrets};
 use crate::service::{TunnelService, Tuning};
 use crate::store::TunnelStore;
 use crate::traffic::TrafficService;
+use crate::update::{self, Updater};
 use crate::{tray, window};
 
 pub struct AppState {
@@ -21,6 +22,7 @@ pub struct AppState {
     pub tunnels: Arc<TunnelService>,
     pub traffic: TrafficService,
     pub level: LevelHandle,
+    pub updater: Updater,
 }
 
 impl AppState {
@@ -60,6 +62,7 @@ pub fn setup(app: &mut App, data_dir: PathBuf, cfg: AppConfig, level: LevelHandl
         tunnels: tunnels.clone(),
         traffic: TrafficService::default(),
         level,
+        updater: Updater::new(app.package_info().version.to_string()),
     });
 
     let log_app = handle.clone();
@@ -88,6 +91,8 @@ pub fn setup(app: &mut App, data_dir: PathBuf, cfg: AppConfig, level: LevelHandl
             let _ = traffic_app.emit(events::TRAFFIC, tr);
         }
     });
+
+    update::spawn(handle.clone());
 
     tauri::async_runtime::spawn(async move {
         let failed = tunnels.start_auto().await;

@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { errorMessage, events, hostKeyApi, settingsApi, trafficApi, tunnelApi } from "./api";
-import { setLanguage } from "./i18n";
-import type { HostKeyPrompt, Settings, SettingsInput, Traffic, TunnelView } from "./types";
+import { errorMessage, events, hostKeyApi, settingsApi, trafficApi, tunnelApi, updateApi } from "./api";
+import { setLanguage, t } from "./i18n";
+import type { HostKeyPrompt, Settings, SettingsInput, Traffic, TunnelView, UpdateInfo } from "./types";
 
 // ---------- 提示 ----------
 
@@ -262,15 +262,111 @@ function merge(cur: HostKeyPrompt[], add: HostKeyPrompt[]) {
   return [...cur, ...add.filter((p) => !ids.has(p.requestId))];
 }
 
+// ---------- 版本更新 ----------
+
+interface UpdateCtx {
+  info: UpdateInfo | null;
+  checking: boolean;
+  /** 主动检查，结果用提示告知。via 为动态转发隧道 ID 时经它访问，为空时直接访问。 */
+  check: (via?: string) => Promise<void>;
+  installing: boolean;
+  /** 下载进度百分比，大小未知时为 null。 */
+  progress: number | null;
+  install: (via?: string) => Promise<void>;
+  /** 更新页面（新版本的更新内容和更新按钮） */
+  dialogOpen: boolean;
+  setDialogOpen: (open: boolean) => void;
+}
+
+const UpdateContext = createContext<UpdateCtx>(null!);
+export const useUpdate = () => useContext(UpdateContext);
+
+function UpdateProvider({ children }: { children: ReactNode }) {
+  const toast = useToast();
+  const [info, setInfo] = useState<UpdateInfo | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const seen = useRef<string | undefined>(undefined);
+  const manual = useRef(false);
+
+  // 托盘点“发现新版本”时打开更新页面：窗口新建时在加载后取请求，已打开时收到事件再取。
+  useEffect(() => {
+    const take = () =>
+      updateApi
+        .takeOpenRequest()
+        .then((yes) => yes && setDialogOpen(true))
+        .catch(() => {});
+    take();
+    return events.onUpdateOpen(take);
+  }, []);
+
+  useEffect(() => {
+    updateApi
+      .status()
+      .then((u) => {
+        seen.current = u.latest;
+        setInfo(u);
+      })
+      .catch(() => {});
+    // 后台定时检查发现新版本时提示一次，主动检查的结果由 check 自己提示。
+    return events.onUpdate((u) => {
+      if (!manual.current && u.hasUpdate && u.latest !== seen.current) toast.info(t("update.found", { version: u.latest ?? "" }));
+      seen.current = u.latest;
+      setInfo(u);
+    });
+  }, []);
+
+  const check = useCallback(async (via?: string) => {
+    manual.current = true;
+    setChecking(true);
+    try {
+      const u = await updateApi.check(via);
+      setInfo(u);
+      if (u.hasUpdate) setDialogOpen(true);
+      else toast.success(t("update.upToDate"));
+    } catch (e) {
+      toast.error(e);
+    } finally {
+      manual.current = false;
+      setChecking(false);
+    }
+  }, []);
+
+  const [installing, setInstalling] = useState(false);
+  const [progress, setProgress] = useState<number | null>(null);
+  useEffect(() => events.onUpdateProgress((p) => setProgress(p.total ? Math.floor((p.downloaded / p.total) * 100) : null)), []);
+
+  const install = useCallback(async (via?: string) => {
+    setInstalling(true);
+    setProgress(0);
+    try {
+      await updateApi.install(via);
+    } catch (e) {
+      toast.error(e);
+    } finally {
+      setInstalling(false);
+      setProgress(null);
+    }
+  }, []);
+
+  const value = useMemo(
+    () => ({ info, checking, check, installing, progress, install, dialogOpen, setDialogOpen }),
+    [info, checking, check, installing, progress, install, dialogOpen],
+  );
+  return <UpdateContext.Provider value={value}>{children}</UpdateContext.Provider>;
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
   return (
     <ToastProvider>
       <SettingsProvider>
-        <TunnelsProvider>
-          <TrafficProvider>
-            <HostKeyProvider>{children}</HostKeyProvider>
-          </TrafficProvider>
-        </TunnelsProvider>
+        <UpdateProvider>
+          <TunnelsProvider>
+            <TrafficProvider>
+              <HostKeyProvider>{children}</HostKeyProvider>
+            </TrafficProvider>
+          </TunnelsProvider>
+        </UpdateProvider>
       </SettingsProvider>
     </ToastProvider>
   );

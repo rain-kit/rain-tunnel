@@ -99,8 +99,11 @@ cargo test
 
 Pushing a tag that starts with `v` triggers [GitHub Actions](./.github/workflows/release.yml), which builds installers for Windows, macOS and Linux (x64 and ARM64 each) and publishes them to Releases. Pushing to `main` only compiles, which checks the build and warms the cache for the next release.
 
+Installers also produce signed in-app update packages and a `latest.json`, so building them requires the updater signing key. Set the repository secret `TAURI_SIGNING_PRIVATE_KEY` (and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` if the key has one); for a local `npm run tauri build`, set the same environment variables. The matching public key is `plugins.updater.pubkey` in `src-tauri/tauri.conf.json`.
+
 1. Update the version in `package.json`, `src-tauri/tauri.conf.json` and `src-tauri/Cargo.toml`.
-2. Commit, then create and push a matching tag:
+2. Add a `## vX.Y.Z` section to [ChangeLog.md](./ChangeLog.md). It becomes the "What's new" part of the release notes and of the in-app update page; the release fails if the section is missing.
+3. Commit, then create and push a matching tag:
 
    ```shell
    git tag v1.0.0
