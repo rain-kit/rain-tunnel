@@ -48,8 +48,22 @@ fn system_dark() -> bool {
     false
 }
 
+/// macOS 上切换 Dock 和 Cmd+Tab 中是否显示应用图标；隐藏后只能从托盘唤回窗口。
+pub fn set_dock_visible(app: &AppHandle, visible: bool) {
+    #[cfg(target_os = "macos")]
+    {
+        let policy = if visible { tauri::ActivationPolicy::Regular } else { tauri::ActivationPolicy::Accessory };
+        if let Err(e) = app.set_activation_policy(policy) {
+            error!(err = %e, "切换 Dock 图标显示失败");
+        }
+    }
+    #[cfg(not(target_os = "macos"))]
+    let _ = (app, visible);
+}
+
 /// 显示主窗口；关闭到托盘后窗口已销毁，此时重新创建。
 pub fn show_main(app: &AppHandle) {
+    set_dock_visible(app, true);
     if let Some(w) = app.get_webview_window(MAIN) {
         let _ = w.unminimize();
         let _ = w.show();

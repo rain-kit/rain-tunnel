@@ -76,7 +76,9 @@ pub fn setup(app: &mut App, data_dir: PathBuf, cfg: AppConfig, level: LevelHandl
     let tray_app = handle.clone();
     tunnels.on_change(move || tray::refresh_soon(&tray_app));
 
-    if !silent {
+    if silent {
+        window::set_dock_visible(&handle, false);
+    } else {
         window::show_main(&handle);
     }
 
@@ -110,6 +112,7 @@ pub fn on_run_event(app: &AppHandle, ev: RunEvent) {
             let to_tray = app.state::<AppState>().config.lock().unwrap().app.close_to_tray;
             if to_tray {
                 api.prevent_exit();
+                window::set_dock_visible(app, false);
             } else {
                 app.exit(0);
             }
