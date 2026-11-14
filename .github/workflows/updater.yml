@@ -1,0 +1,37 @@
+name: Updater JSON
+
+# 发布时由 release.yml 调用；Release 停在草稿或 latest.json 有问题时，也可以在 Actions 页面手动运行，不用重新编译。
+on:
+  workflow_call:
+    inputs:
+      tag:
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '版本标签，例如 v1.0.6'
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  updater-json:
+    name: Publish latest.json
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+
+      - name: Upload latest.json and publish release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+        run: node .github/scripts/updater-json.mjs "${TAG}" "${GITHUB_REPOSITORY}"

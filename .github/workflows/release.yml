@@ -129,9 +129,18 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: 'Rain Tunnel ${{ github.ref_name }}'
           releaseBody: ${{ steps.notes.outputs.body }}
-          releaseDraft: false
+          # 先建草稿，全部平台上传完后由 updater-json 生成 latest.json 并发布。
+          releaseDraft: true
           prerelease: false
+          includeUpdaterJson: false
           # 文件名中的空格会被 GitHub 换成点，例如 Rain.Tunnel_windows_1.0.3_x64-setup.exe；latest.json 里的下载地址按同一规则生成。
           # .github/release-notes.md 和 README 中的下载文件名要与这里保持一致。
           assetNamePattern: '[name]_${{ matrix.os }}_[version]_[arch][setup][ext]'
           args: --target ${{ matrix.target }} --bundles ${{ matrix.bundles }}
+
+  updater-json:
+    needs: build
+    if: github.ref_type == 'tag'
+    uses: ./.github/workflows/updater.yml
+    with:
+      tag: ${{ github.ref_name }}
