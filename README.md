@@ -16,14 +16,14 @@ Go to the [Release page](https://github.com/rain-kit/rain-tunnel/releases) to do
 
 | Platform | Architecture | File |
 | :------- | :----------- | :--- |
-| Windows 10 / 11 | x64 | `Rain.Tunnel_x.y.z_x64-setup.exe` |
-| Windows 11 | ARM64 | `Rain.Tunnel_x.y.z_arm64-setup.exe` |
-| macOS | Apple Silicon (M series) | `Rain.Tunnel_x.y.z_aarch64.dmg` |
-| macOS | Intel | `Rain.Tunnel_x.y.z_x64.dmg` |
-| Debian / Ubuntu | x64 | `Rain.Tunnel_x.y.z_amd64.deb` |
-| Debian / Ubuntu | ARM64 | `Rain.Tunnel_x.y.z_arm64.deb` |
-| RHEL / Fedora / CentOS | x64 | `Rain.Tunnel-x.y.z-1.x86_64.rpm` |
-| RHEL / Fedora / CentOS | ARM64 | `Rain.Tunnel-x.y.z-1.aarch64.rpm` |
+| Windows 10 / 11 | x64 | `Rain.Tunnel_windows_x.y.z_x64-setup.exe` |
+| Windows 11 | ARM64 | `Rain.Tunnel_windows_x.y.z_arm64-setup.exe` |
+| macOS | Apple Silicon (M series) | `Rain.Tunnel_macos_x.y.z_aarch64.dmg` |
+| macOS | Intel | `Rain.Tunnel_macos_x.y.z_x64.dmg` |
+| Debian / Ubuntu | x64 | `Rain.Tunnel_linux_x.y.z_amd64.deb` |
+| Debian / Ubuntu | ARM64 | `Rain.Tunnel_linux_x.y.z_arm64.deb` |
+| RHEL / Fedora / CentOS | x64 | `Rain.Tunnel_linux_x.y.z_x86_64.rpm` |
+| RHEL / Fedora / CentOS | ARM64 | `Rain.Tunnel_linux_x.y.z_aarch64.rpm` |
 
 On Linux, install with `sudo apt install ./<file>.deb` or `sudo dnf install ./<file>.rpm`.
 

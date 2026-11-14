@@ -16,14 +16,14 @@ Languages: [English](../README.md) · [简体中文](./README_zh-CN.md) · 繁�
 
 | 平台 | 架構 | 檔案 |
 | :--- | :--- | :--- |
-| Windows 10 / 11 | x64 | `Rain.Tunnel_x.y.z_x64-setup.exe` |
-| Windows 11 | ARM64 | `Rain.Tunnel_x.y.z_arm64-setup.exe` |
-| macOS | Apple Silicon（M 系列晶片） | `Rain.Tunnel_x.y.z_aarch64.dmg` |
-| macOS | Intel | `Rain.Tunnel_x.y.z_x64.dmg` |
-| Debian / Ubuntu | x64 | `Rain.Tunnel_x.y.z_amd64.deb` |
-| Debian / Ubuntu | ARM64 | `Rain.Tunnel_x.y.z_arm64.deb` |
-| RHEL / Fedora / CentOS | x64 | `Rain.Tunnel-x.y.z-1.x86_64.rpm` |
-| RHEL / Fedora / CentOS | ARM64 | `Rain.Tunnel-x.y.z-1.aarch64.rpm` |
+| Windows 10 / 11 | x64 | `Rain.Tunnel_windows_x.y.z_x64-setup.exe` |
+| Windows 11 | ARM64 | `Rain.Tunnel_windows_x.y.z_arm64-setup.exe` |
+| macOS | Apple Silicon（M 系列晶片） | `Rain.Tunnel_macos_x.y.z_aarch64.dmg` |
+| macOS | Intel | `Rain.Tunnel_macos_x.y.z_x64.dmg` |
+| Debian / Ubuntu | x64 | `Rain.Tunnel_linux_x.y.z_amd64.deb` |
+| Debian / Ubuntu | ARM64 | `Rain.Tunnel_linux_x.y.z_arm64.deb` |
+| RHEL / Fedora / CentOS | x64 | `Rain.Tunnel_linux_x.y.z_x86_64.rpm` |
+| RHEL / Fedora / CentOS | ARM64 | `Rain.Tunnel_linux_x.y.z_aarch64.rpm` |
 
 Linux 上使用 `sudo apt install ./<檔名>.deb` 或 `sudo dnf install ./<檔名>.rpm` 安裝。
 

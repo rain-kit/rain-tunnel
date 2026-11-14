@@ -25,26 +25,32 @@ jobs:
             platform: windows-latest
             target: x86_64-pc-windows-msvc
             bundles: nsis
+            os: windows
           - name: windows-arm64
             platform: windows-latest
             target: aarch64-pc-windows-msvc
             bundles: nsis
+            os: windows
           - name: macos-arm64
             platform: macos-latest
             target: aarch64-apple-darwin
             bundles: dmg
+            os: macos
           - name: macos-x64
             platform: macos-latest
             target: x86_64-apple-darwin
             bundles: dmg
+            os: macos
           - name: linux-x64
             platform: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
             bundles: deb,rpm
+            os: linux
           - name: linux-arm64
             platform: ubuntu-22.04-arm
             target: aarch64-unknown-linux-gnu
             bundles: deb,rpm
+            os: linux
 
     runs-on: ${{ matrix.platform }}
 
@@ -125,4 +131,7 @@ jobs:
           releaseBody: ${{ steps.notes.outputs.body }}
           releaseDraft: false
           prerelease: false
+          # 文件名中的空格会被 GitHub 换成点，例如 Rain.Tunnel_windows_1.0.3_x64-setup.exe；latest.json 里的下载地址按同一规则生成。
+          # .github/release-notes.md 和 README 中的下载文件名要与这里保持一致。
+          releaseAssetNamePattern: '[name]_${{ matrix.os }}_[version]_[arch][setup][ext]'
           args: --target ${{ matrix.target }} --bundles ${{ matrix.bundles }}
