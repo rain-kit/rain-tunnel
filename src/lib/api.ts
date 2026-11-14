@@ -13,6 +13,7 @@ import type {
   TunnelStatus,
   TunnelView,
   UpdateInfo,
+  UsageView,
 } from "./types";
 
 /** 后端命令失败时返回 { code, i18n, params }，见 src-tauri/src/error.rs。 */
@@ -55,6 +56,8 @@ export const connApi = {
 export const trafficApi = {
   current: () => invoke<Traffic>("traffic_current"),
   history: () => invoke<{ t: number; up: number; down: number }[]>("traffic_history"),
+  /** 累计流量和最近 days 天（含今天）的每日流量。 */
+  usage: (days: number) => invoke<UsageView>("traffic_usage", { days }),
 };
 
 export const settingsApi = {

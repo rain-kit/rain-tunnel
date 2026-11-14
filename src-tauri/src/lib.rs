@@ -14,6 +14,7 @@ pub mod store;
 pub mod traffic;
 pub mod tray;
 pub mod update;
+pub mod usage;
 pub mod util;
 pub mod window;
 
@@ -59,6 +60,7 @@ pub fn run() {
             commands::conn_close_all,
             commands::traffic_current,
             commands::traffic_history,
+            commands::traffic_usage,
             commands::settings_get,
             commands::settings_save,
             commands::settings_set_autolaunch,

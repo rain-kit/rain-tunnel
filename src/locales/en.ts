@@ -192,6 +192,12 @@ const en: Messages = {
   "conn.closeAllTitle": "Close All Connections",
   "conn.closeAllMessage": "All ongoing connections on every tunnel will be closed. The tunnels keep running.",
 
+  "usage.total": "Total traffic",
+  "usage.today": "Today",
+  "usage.daily": "Daily traffic",
+  "usage.rangeTotal": "{size} in the last {count} days",
+  "usage.days": "{count} days",
+
   "logs.openDir": "Open log folder",
   "logs.clear": "Clear",
   "logs.empty": "No logs",
@@ -223,7 +229,7 @@ const en: Messages = {
   "settings.data": "Data",
   "settings.dataDir": "Data folder",
   "settings.dataNote":
-    "Tunnels are saved in tunnels.json, app settings in config.yaml, and trusted server fingerprints in known_hosts. Passwords are kept in the system credential store (Windows Credential Manager / macOS Keychain), never in files.",
+    "Tunnels are saved in tunnels.json, app settings in config.yaml, trusted server fingerprints in known_hosts, and traffic statistics in traffic.json. Passwords are kept in the system credential store (Windows Credential Manager / macOS Keychain), never in files.",
   "settings.about": "About",
   "settings.aboutDesc": "Manage SSH local, remote and dynamic port forwarding",
   "settings.autoCheckUpdate": "Check for updates automatically",

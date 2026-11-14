@@ -17,6 +17,7 @@ use crate::i18n::{self, Msg};
 use crate::model::{ConnectionView, HostKeyPrompt, LogEntry, SaveTunnelReq, Traffic, TunnelView};
 use crate::traffic::TrafficPoint;
 use crate::update::{self, UpdateInfo};
+use crate::usage::UsageView;
 use crate::{tray, window};
 
 type S<'a> = State<'a, AppState>;
@@ -43,7 +44,9 @@ pub async fn tunnel_duplicate(s: S<'_>, id: String) -> ApiResult<TunnelView> {
 
 #[tauri::command]
 pub async fn tunnel_delete(s: S<'_>, id: String) -> ApiResult<()> {
-    s.tunnels.delete(&id).await
+    s.tunnels.delete(&id).await?;
+    s.traffic.remove(&id);
+    Ok(())
 }
 
 #[tauri::command]
@@ -107,6 +110,12 @@ pub async fn traffic_current(s: S<'_>) -> ApiResult<Traffic> {
 #[tauri::command]
 pub async fn traffic_history(s: S<'_>) -> ApiResult<Vec<TrafficPoint>> {
     Ok(s.traffic.history())
+}
+
+/// 各隧道的累计流量和最近 days 天（含今天）的每日流量。
+#[tauri::command]
+pub async fn traffic_usage(s: S<'_>, days: u32) -> ApiResult<UsageView> {
+    Ok(s.traffic.usage(days.clamp(1, 366) as u64))
 }
 
 #[derive(Serialize)]

@@ -14,7 +14,11 @@ use crate::service::{TunnelService, Tuning};
 use crate::store::TunnelStore;
 use crate::traffic::TrafficService;
 use crate::update::{self, Updater};
+use crate::usage::UsageStore;
 use crate::{tray, window};
+
+/// 每日流量写盘间隔（秒），退出时也会写一次。
+const USAGE_SAVE_SECS: u64 = 60;
 
 pub struct AppState {
     pub data_dir: PathBuf,
@@ -56,11 +60,12 @@ pub fn setup(app: &mut App, data_dir: PathBuf, cfg: AppConfig, level: LevelHandl
         Tuning::default(),
     );
     let silent = cfg.app.silent_start;
+    let usage = UsageStore::open(data_dir.join("traffic.json"));
     app.manage(AppState {
         data_dir,
         config: Mutex::new(cfg),
         tunnels: tunnels.clone(),
-        traffic: TrafficService::default(),
+        traffic: TrafficService::new(usage),
         level,
         updater: Updater::new(app.package_info().version.to_string()),
     });
@@ -86,11 +91,14 @@ pub fn setup(app: &mut App, data_dir: PathBuf, cfg: AppConfig, level: LevelHandl
     tauri::async_runtime::spawn(async move {
         let mut tick = tokio::time::interval(Duration::from_secs(1));
         tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
-        loop {
+        for n in 1u64.. {
             tick.tick().await;
             let st = traffic_app.state::<AppState>();
             let tr = st.traffic.sample(&st.tunnels.snapshot_running());
             let _ = traffic_app.emit(events::TRAFFIC, tr);
+            if n % USAGE_SAVE_SECS == 0 {
+                st.traffic.save_usage();
+            }
         }
     });
 
@@ -124,6 +132,7 @@ pub fn on_run_event(app: &AppHandle, ev: RunEvent) {
                     warn!("停止隧道超时，直接退出");
                 }
             });
+            app.state::<AppState>().traffic.flush();
             info!("程序退出");
         }
         #[cfg(target_os = "macos")]

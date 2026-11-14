@@ -92,6 +92,23 @@ export interface Traffic {
   tunnels: Record<string, TunnelTraffic>;
 }
 
+export interface ByteCount {
+  up: number;
+  down: number;
+}
+
+export interface TunnelUsage {
+  total: ByteCount;
+  /** 键为本地日期 YYYY-MM-DD，没有流量的日期不出现。 */
+  days: Record<string, ByteCount>;
+}
+
+/** 各隧道的累计流量和最近若干天的每日流量。 */
+export interface UsageView {
+  today: string;
+  tunnels: Record<string, TunnelUsage>;
+}
+
 export interface ConnectionView {
   id: string;
   tunnelId: string;

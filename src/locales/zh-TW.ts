@@ -184,6 +184,12 @@ const zhTW: Messages = {
   "conn.closeAllTitle": "中斷全部連線",
   "conn.closeAllMessage": "會中斷所有隧道上正在進行的連線，隧道本身保持執行。",
 
+  "usage.total": "累計流量",
+  "usage.today": "今日",
+  "usage.daily": "每日流量",
+  "usage.rangeTotal": "近 {count} 天共 {size}",
+  "usage.days": "{count} 天",
+
   "logs.openDir": "開啟日誌目錄",
   "logs.clear": "清除",
   "logs.empty": "目前沒有日誌",
@@ -215,7 +221,7 @@ const zhTW: Messages = {
   "settings.data": "資料",
   "settings.dataDir": "資料目錄",
   "settings.dataNote":
-    "隧道設定儲存在 tunnels.json，程式設定在 config.yaml，已信任的伺服器指紋在 known_hosts；密碼儲存在系統認證資料庫（Windows 認證管理員 / macOS 鑰匙圈），不寫入檔案。",
+    "隧道設定儲存在 tunnels.json，程式設定在 config.yaml，已信任的伺服器指紋在 known_hosts，流量統計在 traffic.json；密碼儲存在系統認證資料庫（Windows 認證管理員 / macOS 鑰匙圈），不寫入檔案。",
   "settings.about": "關於",
   "settings.aboutDesc": "SSH 本機、遠端、動態連接埠轉送管理工具",
   "settings.autoCheckUpdate": "自動檢查更新",

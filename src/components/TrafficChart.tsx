@@ -4,16 +4,16 @@ import { useI18n } from "../lib/i18n";
 import { HISTORY_SIZE, useSettings, type TrafficPoint } from "../lib/store";
 
 // 取一个整齐的纵轴上限，避免刻度跳来跳去。
-function niceMax(v: number): number {
+export function niceMax(v: number): number {
   const min = 1024;
   if (v <= min) return min;
   const exp = Math.pow(2, Math.ceil(Math.log2(v)));
   return exp * 0.75 >= v ? exp * 0.75 : exp;
 }
 
-const COLORS = { up: "#f59e0b", down: "#10b981" };
+export const COLORS = { up: "#f59e0b", down: "#10b981" };
 
-function withAlpha(hex: string, a: number) {
+export function withAlpha(hex: string, a: number) {
   const n = parseInt(hex.slice(1), 16);
   return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
 }
