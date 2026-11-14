@@ -76,6 +76,7 @@ export interface HostKeyPrompt {
 export interface TunnelTraffic {
   up: number;
   down: number;
+  /** 本次运行以来的上传、下载。 */
   totalUp: number;
   totalDown: number;
   active: number;
@@ -85,6 +86,7 @@ export interface Traffic {
   time?: string;
   up: number;
   down: number;
+  /** 运行中隧道本次运行以来的上传、下载之和。 */
   totalUp: number;
   totalDown: number;
   active: number;

@@ -20,7 +20,7 @@ export default function App() {
     <div className="flex h-full" onContextMenu={(e) => import.meta.env.PROD && e.preventDefault()}>
       <Sidebar page={page} onChange={setPage} />
       <main className="flex min-w-0 flex-1 flex-col">
-        {page === "home" && <Home onNew={() => edit(null)} onOpenTunnels={() => setPage("tunnels")} />}
+        {page === "home" && <Home onNew={() => edit(null)} onNavigate={setPage} />}
         {page === "tunnels" && <Tunnels onEdit={edit} />}
         {page === "connections" && <Connections />}
         {page === "logs" && <Logs />}

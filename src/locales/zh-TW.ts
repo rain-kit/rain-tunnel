@@ -155,9 +155,6 @@ const zhTW: Messages = {
   "home.activeConns": "活動連線",
   "home.total": "累計 {size}",
   "home.realtime": "即時流量",
-  "home.manageAll": "管理全部",
-  "home.emptyDesc": "新增一條隧道開始使用",
-
   "tunnels.searchPlaceholder": "搜尋名稱、位址、連接埠",
   "tunnels.startFailed": "{count} 條啟動失敗：{list}",
   "tunnels.failedItem": "{name}（{error}）",
@@ -184,11 +181,13 @@ const zhTW: Messages = {
   "conn.closeAllTitle": "中斷全部連線",
   "conn.closeAllMessage": "會中斷所有隧道上正在進行的連線，隧道本身保持執行。",
 
-  "usage.total": "累計流量",
+  "usage.total": "累計",
   "usage.today": "今日",
   "usage.daily": "每日流量",
-  "usage.rangeTotal": "近 {count} 天共 {size}",
-  "usage.days": "{count} 天",
+  "usage.view.chart": "圖表",
+  "usage.view.table": "列表",
+  "usage.col.date": "日期",
+  "usage.col.sum": "合計",
 
   "logs.openDir": "開啟日誌目錄",
   "logs.clear": "清除",

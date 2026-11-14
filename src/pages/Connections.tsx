@@ -1,7 +1,6 @@
 import { ArrowDown, ArrowUp, Gauge, Pause, Play, Search, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import TitleBar from "../components/TitleBar";
-import UsagePanel from "../components/UsagePanel";
 import { Button, Card, Confirm, cx, Empty, IconButton, Input, Select } from "../components/ui";
 import { connApi } from "../lib/api";
 import { formatBytes, formatDuration } from "../lib/format";
@@ -127,9 +126,8 @@ export default function Connections() {
           </>
         }
       />
-      <div className="flex min-h-0 flex-1 flex-col gap-3 px-6 pb-6">
-        <UsagePanel tunnelId={tunnelId} className="min-h-44 flex-1" />
-        <div className="flex min-h-0 flex-2 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col px-6 pb-6">
+        <div className="flex min-h-0 flex-1 flex-col">
           <Card className="min-h-0 flex-1 overflow-y-auto">
             {rows.length === 0 ? (
               <Empty

@@ -160,9 +160,6 @@ const en: Messages = {
   "home.activeConns": "Active connections",
   "home.total": "Total {size}",
   "home.realtime": "Live Traffic",
-  "home.manageAll": "Manage all",
-  "home.emptyDesc": "Create a tunnel to get started",
-
   "tunnels.searchPlaceholder": "Search name, address, port",
   "tunnels.startFailed": "{count} failed to start: {list}",
   "tunnels.failedItem": "{name} ({error})",
@@ -192,11 +189,13 @@ const en: Messages = {
   "conn.closeAllTitle": "Close All Connections",
   "conn.closeAllMessage": "All ongoing connections on every tunnel will be closed. The tunnels keep running.",
 
-  "usage.total": "Total traffic",
+  "usage.total": "Total",
   "usage.today": "Today",
   "usage.daily": "Daily traffic",
-  "usage.rangeTotal": "{size} in the last {count} days",
-  "usage.days": "{count} days",
+  "usage.view.chart": "Chart",
+  "usage.view.table": "List",
+  "usage.col.date": "Date",
+  "usage.col.sum": "Total",
 
   "logs.openDir": "Open log folder",
   "logs.clear": "Clear",

@@ -297,6 +297,7 @@ pub struct Traffic {
     pub time: Option<DateTime<Local>>,
     pub up: u64,
     pub down: u64,
+    /// 运行中隧道本次运行以来的上传、下载之和。
     pub total_up: u64,
     pub total_down: u64,
     pub active: usize,
@@ -310,6 +311,7 @@ pub struct Traffic {
 pub struct TunnelTraffic {
     pub up: u64,
     pub down: u64,
+    /// 本次运行以来的上传、下载。
     pub total_up: u64,
     pub total_down: u64,
     pub active: usize,

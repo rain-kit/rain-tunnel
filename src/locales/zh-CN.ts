@@ -153,9 +153,6 @@ const zhCN = {
   "home.activeConns": "活动连接",
   "home.total": "累计 {size}",
   "home.realtime": "实时流量",
-  "home.manageAll": "管理全部",
-  "home.emptyDesc": "新建一条隧道开始使用",
-
   "tunnels.searchPlaceholder": "搜索名称、地址、端口",
   "tunnels.startFailed": "{count} 条启动失败：{list}",
   "tunnels.failedItem": "{name}（{error}）",
@@ -182,11 +179,13 @@ const zhCN = {
   "conn.closeAllTitle": "断开全部连接",
   "conn.closeAllMessage": "会断开所有隧道上正在进行的连接，隧道本身保持运行。",
 
-  "usage.total": "累计流量",
+  "usage.total": "累计",
   "usage.today": "今日",
   "usage.daily": "每日流量",
-  "usage.rangeTotal": "近 {count} 天共 {size}",
-  "usage.days": "{count} 天",
+  "usage.view.chart": "图表",
+  "usage.view.table": "列表",
+  "usage.col.date": "日期",
+  "usage.col.sum": "合计",
 
   "logs.openDir": "打开日志目录",
   "logs.clear": "清空",

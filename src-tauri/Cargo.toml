@@ -1,6 +1,6 @@
 [package]
 name = "rain-tunnel"
-version = "1.0.4"
+version = "1.0.5"
 description = "SSH 隧道管理：本地、远程、动态端口转发"
 license = "MIT"
 edition = "2024"

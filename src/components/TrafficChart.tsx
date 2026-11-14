@@ -18,6 +18,39 @@ export function withAlpha(hex: string, a: number) {
   return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
 }
 
+/** 画一条平滑折线，下方填充到 bottom 的渐变。 */
+export function drawSeries(
+  ctx: CanvasRenderingContext2D,
+  pts: (readonly [number, number])[],
+  color: string,
+  top: number,
+  bottom: number,
+  compact?: boolean,
+) {
+  if (pts.length < 2) return;
+  const path = new Path2D();
+  path.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) {
+    const [x0, y0] = pts[i - 1];
+    const [x1, y1] = pts[i];
+    const mx = (x0 + x1) / 2;
+    path.bezierCurveTo(mx, y0, mx, y1, x1, y1);
+  }
+  const area = new Path2D(path);
+  area.lineTo(pts[pts.length - 1][0], bottom);
+  area.lineTo(pts[0][0], bottom);
+  area.closePath();
+  const grad = ctx.createLinearGradient(0, top, 0, bottom);
+  grad.addColorStop(0, withAlpha(color, compact ? 0.28 : 0.22));
+  grad.addColorStop(1, withAlpha(color, 0));
+  ctx.fillStyle = grad;
+  ctx.fill(area);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = compact ? 1.5 : 2;
+  ctx.lineJoin = "round";
+  ctx.stroke(path);
+}
+
 export default function TrafficChart({ history, height, compact }: { history: TrafficPoint[]; height: number; compact?: boolean }) {
   const { dark } = useSettings();
   const { t, locale } = useI18n();
@@ -76,30 +109,8 @@ export default function TrafficChart({ history, height, compact }: { history: Tr
     }
 
     for (const key of ["up", "down"] as const) {
-      if (history.length < 2) continue;
-      const color = COLORS[key];
       const pts = history.map((p, i) => [xOf(i), yOf(p[key])] as const);
-      const path = new Path2D();
-      path.moveTo(pts[0][0], pts[0][1]);
-      for (let i = 1; i < pts.length; i++) {
-        const [x0, y0] = pts[i - 1];
-        const [x1, y1] = pts[i];
-        const mx = (x0 + x1) / 2;
-        path.bezierCurveTo(mx, y0, mx, y1, x1, y1);
-      }
-      const area = new Path2D(path);
-      area.lineTo(pts[pts.length - 1][0], padTop + plotH);
-      area.lineTo(pts[0][0], padTop + plotH);
-      area.closePath();
-      const grad = ctx.createLinearGradient(0, padTop, 0, padTop + plotH);
-      grad.addColorStop(0, withAlpha(color, compact ? 0.28 : 0.22));
-      grad.addColorStop(1, withAlpha(color, 0));
-      ctx.fillStyle = grad;
-      ctx.fill(area);
-      ctx.strokeStyle = color;
-      ctx.lineWidth = compact ? 1.5 : 2;
-      ctx.lineJoin = "round";
-      ctx.stroke(path);
+      drawSeries(ctx, pts, COLORS[key], padTop, padTop + plotH, compact);
     }
   }, [history, width, height, compact, dark, locale]);
 
