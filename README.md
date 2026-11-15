@@ -10,6 +10,8 @@ Languages: English · [简体中文](./docs/README_zh-CN.md) · [繁體中文](.
 [![Downloads](https://img.shields.io/github/downloads/rain-kit/rain-tunnel/total?style=flat-square)](https://github.com/rain-kit/rain-tunnel/releases)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue?style=flat-square)
 
+![Overview](./docs/images/overview.png)
+
 ## Install
 
 Go to the [Release page](https://github.com/rain-kit/rain-tunnel/releases) to download the installer for your platform.

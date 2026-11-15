@@ -1,8 +1,8 @@
-import { ArrowUpCircle, FolderOpen, Monitor, Moon, RefreshCw, Sun } from "lucide-react";
+import { ArrowUpCircle, FolderOpen, Monitor, Moon, MoreHorizontal, RefreshCw, Sun } from "lucide-react";
 import type { ReactNode } from "react";
 import TitleBar from "../components/TitleBar";
 import UpdateRouteMenu from "../components/UpdateRouteMenu";
-import { Button, Card, Segmented, Select, SwitchRow } from "../components/ui";
+import { Button, Card, IconButton, Menu, Segmented, Select, Switch, SwitchRow } from "../components/ui";
 import { settingsApi } from "../lib/api";
 import { shellLabel, shellOptions } from "../lib/format";
 import { useI18n, type Language } from "../lib/i18n";
@@ -141,19 +141,38 @@ export default function Settings() {
                   v{s.version}
                   {newVersion && <span className="absolute -top-1 -right-2 size-2 rounded-full bg-red-500" />}
                 </span>
-                <UpdateRouteMenu onPick={check}>
-                  {(open) => (
-                    <Button
-                      size="sm"
-                      icon={<RefreshCw size={13} className={checking ? "animate-spin" : undefined} />}
-                      disabled={checking}
-                      onClick={open}
-                      title={updateInfo?.checkedAt && t("update.lastChecked", { time: new Date(updateInfo.checkedAt).toLocaleString() })}
-                    >
-                      {t(checking ? "update.checking" : "update.check")}
-                    </Button>
-                  )}
-                </UpdateRouteMenu>
+                <div className="flex items-center gap-0.5">
+                  <UpdateRouteMenu onPick={check}>
+                    {(open) => (
+                      <Button
+                        size="sm"
+                        icon={<RefreshCw size={13} className={checking ? "animate-spin" : undefined} />}
+                        disabled={checking}
+                        onClick={open}
+                        title={updateInfo?.checkedAt && t("update.lastChecked", { time: new Date(updateInfo.checkedAt).toLocaleString() })}
+                      >
+                        {t(checking ? "update.checking" : "update.check")}
+                      </Button>
+                    )}
+                  </UpdateRouteMenu>
+                  <Menu
+                    trigger={(open) => (
+                      <IconButton label={t("common.more")} size="sm" onClick={open}>
+                        <MoreHorizontal size={15} />
+                      </IconButton>
+                    )}
+                    footer={
+                      <div className="flex items-center gap-3 px-2.5 py-1.5 text-[13px] whitespace-nowrap" title={t("settings.autoCheckUpdateDesc")}>
+                        <span>{t("settings.autoCheckUpdate")}</span>
+                        <Switch
+                          checked={s.autoCheckUpdate}
+                          label={t("settings.autoCheckUpdate")}
+                          onChange={(autoCheckUpdate) => update({ autoCheckUpdate })}
+                        />
+                      </div>
+                    }
+                  />
+                </div>
                 {newVersion && (
                   <Button size="sm" variant="primary" icon={<ArrowUpCircle size={13} />} onClick={() => setDialogOpen(true)}>
                     {t("update.update")}
@@ -161,12 +180,6 @@ export default function Settings() {
                 )}
               </div>
             </Row>
-            <SwitchRow
-              title={t("settings.autoCheckUpdate")}
-              desc={t("settings.autoCheckUpdateDesc")}
-              checked={s.autoCheckUpdate}
-              onChange={(autoCheckUpdate) => update({ autoCheckUpdate })}
-            />
           </Group>
         </div>
       </div>

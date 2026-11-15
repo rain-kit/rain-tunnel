@@ -402,7 +402,16 @@ export interface MenuItem {
   onClick: () => void;
 }
 
-export function Menu({ trigger, items }: { trigger: (open: () => void) => ReactNode; items: MenuItem[] }) {
+export function Menu({
+  trigger,
+  items = [],
+  footer,
+}: {
+  trigger: (open: () => void) => ReactNode;
+  items?: MenuItem[];
+  /** 菜单底部的额外内容，点击时不关闭菜单，用来放开关。 */
+  footer?: ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   const anchor = useRef<HTMLSpanElement>(null);
   const menu = useRef<HTMLDivElement>(null);
@@ -468,6 +477,7 @@ export function Menu({ trigger, items }: { trigger: (open: () => void) => ReactN
                 {it.label}
               </button>
             ))}
+            {footer}
           </div>,
           document.body,
         )}
