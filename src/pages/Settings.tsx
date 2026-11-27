@@ -8,7 +8,7 @@ import { settingsApi } from "../lib/api";
 import { shellLabel, shellOptions } from "../lib/format";
 import { useI18n, type Language } from "../lib/i18n";
 import { useSettings, useToast, useUpdate } from "../lib/store";
-import type { LogLevel, SettingsInput, ShellType, ThemeMode } from "../lib/types";
+import type { LogLevel, MinimizeAction, SettingsInput, ShellType, ThemeMode } from "../lib/types";
 
 function Group({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -143,6 +143,17 @@ export default function Settings() {
               checked={s.closeToTray}
               onChange={(closeToTray) => update({ closeToTray })}
             />
+            <Row title={t("settings.minimizeAction")} desc={t("settings.minimizeActionDesc")}>
+              <Select<MinimizeAction>
+                className="w-32"
+                value={s.minimizeAction}
+                onChange={(minimizeAction) => update({ minimizeAction })}
+                options={[
+                  { value: "minimize", label: t("settings.minimizeAction.minimize") },
+                  { value: "close", label: t("settings.minimizeAction.close") },
+                ]}
+              />
+            </Row>
           </Group>
 
           <Group title={t("settings.logs")}>

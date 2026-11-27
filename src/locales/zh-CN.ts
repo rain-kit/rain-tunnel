@@ -306,6 +306,10 @@ const zhCN = {
   "settings.silentStartDesc": "启动时不显示主界面，只在托盘中运行",
   "settings.closeToTray": "关闭窗口时最小化到托盘",
   "settings.closeToTrayDesc": "关闭后隧道继续在后台运行；关闭此项则关闭窗口即退出程序",
+  "settings.minimizeAction": "最小化方式",
+  "settings.minimizeActionDesc": "选择关闭主界面时，最小化会释放界面占用的内存，隧道继续在后台运行，可从托盘重新打开",
+  "settings.minimizeAction.minimize": "缩小窗口",
+  "settings.minimizeAction.close": "关闭主界面",
   "settings.logs": "日志",
   "settings.logLevel": "日志级别",
   "settings.logLevelDesc": "Debug 级别会记录更多细节，排查问题时使用",
@@ -367,6 +371,7 @@ const zhCN = {
   "err.config.themeInvalid": "主题无效：{value}",
   "err.config.languageInvalid": "语言无效：{value}",
   "err.config.terminalInvalid": "终端类型无效：{value}",
+  "err.config.minimizeActionInvalid": "最小化方式无效：{value}",
 
   "err.tunnel.sshHostRequired": "SSH 服务器地址不能为空",
   "err.tunnel.sshUserRequired": "SSH 用户名不能为空",

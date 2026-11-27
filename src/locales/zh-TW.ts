@@ -308,6 +308,10 @@ const zhTW: Messages = {
   "settings.silentStartDesc": "啟動時不顯示主視窗，只在系統匣中執行",
   "settings.closeToTray": "關閉視窗時最小化到系統匣",
   "settings.closeToTrayDesc": "關閉後隧道繼續在背景執行；關閉此項則關閉視窗即結束程式",
+  "settings.minimizeAction": "最小化方式",
+  "settings.minimizeActionDesc": "選擇關閉主介面時，最小化會釋放介面占用的記憶體，隧道繼續在背景執行，可從系統匣重新開啟",
+  "settings.minimizeAction.minimize": "縮小視窗",
+  "settings.minimizeAction.close": "關閉主介面",
   "settings.logs": "日誌",
   "settings.logLevel": "日誌級別",
   "settings.logLevelDesc": "Debug 級別會記錄更多細節，排查問題時使用",
@@ -368,6 +372,7 @@ const zhTW: Messages = {
   "err.config.themeInvalid": "主題無效：{value}",
   "err.config.languageInvalid": "語言無效：{value}",
   "err.config.terminalInvalid": "終端機類型無效：{value}",
+  "err.config.minimizeActionInvalid": "最小化方式無效：{value}",
 
   "err.tunnel.sshHostRequired": "SSH 伺服器位址不能為空",
   "err.tunnel.sshUserRequired": "SSH 使用者名稱不能為空",

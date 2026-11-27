@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 
 use tauri::window::Color;
-use tauri::{AppHandle, Manager, Theme, WebviewUrl, WebviewWindowBuilder};
+use tauri::{AppHandle, Manager, Theme, WebviewUrl, WebviewWindowBuilder, WindowEvent};
 use tracing::error;
 
 use crate::app::AppState;
@@ -10,6 +10,8 @@ use crate::config::APP_NAME;
 pub const MAIN: &str = "main";
 
 static CREATING: AtomicBool = AtomicBool::new(false);
+/// 最小化时关闭了主界面：这次窗口全部关闭不退出程序，不受“关闭到托盘”影响。
+static CLOSED_BY_MINIMIZE: AtomicBool = AtomicBool::new(false);
 
 pub fn native_theme(theme: &str) -> Option<Theme> {
     match theme {
@@ -98,6 +100,35 @@ fn create_main(app: &AppHandle) -> tauri::Result<()> {
     let w = builder.build()?;
     let _ = w.set_focus();
     Ok(())
+}
+
+/// 最小化方式为 close 时，主窗口一最小化就销毁，程序留在托盘。
+/// 没有专门的最小化事件：Windows 最小化时会触发 Resized，macOS 不一定，所以失去焦点时也检查一次。
+pub fn on_window_event(w: &tauri::Window, ev: &WindowEvent) {
+    let maybe_minimized = matches!(ev, WindowEvent::Resized(_) | WindowEvent::Focused(false));
+    if w.label() != MAIN || !maybe_minimized || !w.is_minimized().unwrap_or(false) {
+        return;
+    }
+    let app = w.app_handle();
+    if app.state::<AppState>().config.lock().unwrap().app.minimize_action != "close" {
+        return;
+    }
+    // 在事件回调里直接销毁窗口不安全，放到之后执行。
+    let w = w.clone();
+    tauri::async_runtime::spawn(async move {
+        if CLOSED_BY_MINIMIZE.swap(true, Ordering::SeqCst) {
+            return;
+        }
+        if let Err(e) = w.destroy() {
+            CLOSED_BY_MINIMIZE.store(false, Ordering::SeqCst);
+            error!(err = %e, "最小化时关闭主界面失败");
+        }
+    });
+}
+
+/// 取出并清除“最小化时关闭了主界面”的标记。
+pub fn take_closed_by_minimize() -> bool {
+    CLOSED_BY_MINIMIZE.swap(false, Ordering::SeqCst)
 }
 
 /// 设置页修改主题后同步原生窗口主题（影响 macOS 标题栏和滚动条等）。

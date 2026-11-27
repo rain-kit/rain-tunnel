@@ -316,6 +316,10 @@ const en: Messages = {
   "settings.silentStartDesc": "Don't show the main window on launch; run in the tray only",
   "settings.closeToTray": "Minimize to tray on close",
   "settings.closeToTrayDesc": "Tunnels keep running in the background after closing; when off, closing the window quits the app",
+  "settings.minimizeAction": "On minimize",
+  "settings.minimizeActionDesc": "Closing the main window frees the memory used by the interface; tunnels keep running in the background and you can reopen it from the tray",
+  "settings.minimizeAction.minimize": "Minimize",
+  "settings.minimizeAction.close": "Close window",
   "settings.logs": "Logs",
   "settings.logLevel": "Log level",
   "settings.logLevelDesc": "Debug records more detail, useful for troubleshooting",
@@ -376,6 +380,7 @@ const en: Messages = {
   "err.config.themeInvalid": "Invalid theme: {value}",
   "err.config.languageInvalid": "Invalid language: {value}",
   "err.config.terminalInvalid": "Invalid terminal: {value}",
+  "err.config.minimizeActionInvalid": "Invalid minimize action: {value}",
 
   "err.tunnel.sshHostRequired": "SSH server address is required",
   "err.tunnel.sshUserRequired": "SSH username is required",

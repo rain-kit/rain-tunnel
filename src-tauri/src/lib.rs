@@ -79,6 +79,7 @@ pub fn run() {
             commands::update_install,
             commands::open_release_page,
         ])
+        .on_window_event(window::on_window_event)
         .setup(move |app| app::setup(app, data_dir, cfg, level))
         .build(tauri::generate_context!())
         .expect("启动失败")

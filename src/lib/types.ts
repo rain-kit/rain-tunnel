@@ -136,6 +136,8 @@ export interface LogEntry {
 
 export type ThemeMode = "system" | "light" | "dark";
 export type ShellType = "bash" | "fish" | "nushell" | "powershell" | "cmd";
+/** minimize 缩小窗口；close 关闭主界面，程序留在托盘 */
+export type MinimizeAction = "minimize" | "close";
 
 export interface Settings {
   logLevel: LogLevel;
@@ -145,6 +147,7 @@ export interface Settings {
   systemLanguage: Locale;
   terminal: ShellType;
   closeToTray: boolean;
+  minimizeAction: MinimizeAction;
   silentStart: boolean;
   autoCheckUpdate: boolean;
   /** 用全局快捷键打开工具页 */
@@ -167,6 +170,7 @@ export type SettingsInput = Pick<
   | "language"
   | "terminal"
   | "closeToTray"
+  | "minimizeAction"
   | "silentStart"
   | "autoCheckUpdate"
   | "toolsShortcutEnabled"

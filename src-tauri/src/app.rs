@@ -116,9 +116,9 @@ pub fn setup(app: &mut App, data_dir: PathBuf, cfg: AppConfig, level: LevelHandl
 
 pub fn on_run_event(app: &AppHandle, ev: RunEvent) {
     match ev {
-        // 最后一个窗口关闭时：开启“关闭到托盘”则保留后台运行，窗口已销毁以释放内存。
+        // 最后一个窗口关闭时：开启“关闭到托盘”或是最小化时关闭的，保留后台运行，窗口已销毁以释放内存。
         RunEvent::ExitRequested { code: None, api, .. } => {
-            let to_tray = app.state::<AppState>().config.lock().unwrap().app.close_to_tray;
+            let to_tray = window::take_closed_by_minimize() || app.state::<AppState>().config.lock().unwrap().app.close_to_tray;
             if to_tray {
                 api.prevent_exit();
                 window::set_dock_visible(app, false);

@@ -127,6 +127,7 @@ pub struct SettingsView {
     system_language: &'static str,
     terminal: String,
     close_to_tray: bool,
+    minimize_action: String,
     silent_start: bool,
     auto_check_update: bool,
     tools_shortcut_enabled: bool,
@@ -148,6 +149,7 @@ pub struct SettingsInput {
     language: String,
     terminal: String,
     close_to_tray: bool,
+    minimize_action: String,
     silent_start: bool,
     auto_check_update: bool,
     tools_shortcut_enabled: bool,
@@ -163,6 +165,7 @@ fn settings_view(app: &AppHandle, s: &AppState) -> SettingsView {
         system_language: i18n::system().tag(),
         terminal: cfg.ui.terminal,
         close_to_tray: cfg.app.close_to_tray,
+        minimize_action: cfg.app.minimize_action,
         silent_start: cfg.app.silent_start,
         auto_check_update: cfg.app.auto_check_update,
         tools_shortcut_enabled: cfg.app.tools_shortcut_enabled,
@@ -189,6 +192,7 @@ pub async fn settings_save(app: AppHandle, s: S<'_>, input: SettingsInput) -> Ap
     cfg.ui.language = input.language;
     cfg.ui.terminal = input.terminal;
     cfg.app.close_to_tray = input.close_to_tray;
+    cfg.app.minimize_action = input.minimize_action;
     cfg.app.silent_start = input.silent_start;
     let check_enabled = input.auto_check_update && !cfg.app.auto_check_update;
     cfg.app.auto_check_update = input.auto_check_update;
@@ -215,7 +219,7 @@ pub async fn settings_save(app: AppHandle, s: S<'_>, input: SettingsInput) -> Ap
     window::apply_theme(&app, &cfg.ui.theme);
     i18n::set(&cfg.ui.language);
     tray::refresh_soon(&app);
-    info!(level = %cfg.system.log_level, theme = %cfg.ui.theme, language = %cfg.ui.language, terminal = %cfg.ui.terminal, close_to_tray = cfg.app.close_to_tray, silent_start = cfg.app.silent_start, auto_check_update = cfg.app.auto_check_update, tools_shortcut_enabled = cfg.app.tools_shortcut_enabled, tools_shortcut = %cfg.app.tools_shortcut, "设置已保存");
+    info!(level = %cfg.system.log_level, theme = %cfg.ui.theme, language = %cfg.ui.language, terminal = %cfg.ui.terminal, close_to_tray = cfg.app.close_to_tray, minimize_action = %cfg.app.minimize_action, silent_start = cfg.app.silent_start, auto_check_update = cfg.app.auto_check_update, tools_shortcut_enabled = cfg.app.tools_shortcut_enabled, tools_shortcut = %cfg.app.tools_shortcut, "设置已保存");
     *s.config.lock().unwrap() = cfg;
     // 重新打开时立即检查一次，后台循环最长要等 6 小时。
     if check_enabled {

@@ -100,6 +100,7 @@ function SettingsProvider({ children }: { children: ReactNode }) {
         language: settings.language,
         terminal: settings.terminal,
         closeToTray: settings.closeToTray,
+        minimizeAction: settings.minimizeAction,
         silentStart: settings.silentStart,
         autoCheckUpdate: settings.autoCheckUpdate,
         toolsShortcutEnabled: settings.toolsShortcutEnabled,
