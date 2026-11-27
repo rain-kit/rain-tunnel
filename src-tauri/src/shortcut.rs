@@ -17,9 +17,13 @@ static OPEN_REQUESTED: AtomicBool = AtomicBool::new(false);
 /// 当前快捷键注册失败的原因，设置页显示。
 static LAST_ERROR: Mutex<Option<Msg>> = Mutex::new(None);
 
+/// macOS 上 Alt 即 Option；Command+Space 被 Spotlight 占用，不能做默认值。
 pub fn default_shortcut() -> &'static str {
-    if cfg!(target_os = "macos") { "Cmd+Space" } else { "Alt+Space" }
+    "Alt+Space"
 }
+
+/// v1.0.8、v1.0.9 在 macOS 上的默认快捷键，读取配置时换成新的默认值。
+pub const OLD_MAC_DEFAULT: &str = "Cmd+Space";
 
 pub fn plugin() -> TauriPlugin<Wry> {
     tauri_plugin_global_shortcut::Builder::new()

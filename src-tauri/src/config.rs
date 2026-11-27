@@ -175,7 +175,8 @@ pub fn load(data_dir: &Path) -> Result<AppConfig, String> {
     if !MINIMIZE_ACTIONS.contains(&cfg.app.minimize_action.as_str()) {
         cfg.app.minimize_action = "minimize".into();
     }
-    if cfg.app.tools_shortcut.trim().is_empty() {
+    let old_mac_default = cfg!(target_os = "macos") && cfg.app.tools_shortcut == crate::shortcut::OLD_MAC_DEFAULT;
+    if cfg.app.tools_shortcut.trim().is_empty() || old_mac_default {
         cfg.app.tools_shortcut = crate::shortcut::default_shortcut().into();
     }
     Ok(cfg)
