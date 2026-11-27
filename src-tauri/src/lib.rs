@@ -10,6 +10,7 @@ pub mod logging;
 pub mod model;
 pub mod secrets;
 pub mod service;
+pub mod shortcut;
 pub mod store;
 pub mod traffic;
 pub mod tray;
@@ -42,6 +43,7 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(shortcut::plugin())
         .invoke_handler(tauri::generate_handler![
             commands::tunnel_list,
             commands::tunnel_get,
@@ -72,6 +74,8 @@ pub fn run() {
             commands::update_status,
             commands::update_check,
             commands::update_take_open_request,
+            commands::tools_take_open_request,
+            commands::tools_shortcut_suspend,
             commands::update_install,
             commands::open_release_page,
         ])

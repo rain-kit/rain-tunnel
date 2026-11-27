@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { errorMessage, events, hostKeyApi, settingsApi, trafficApi, tunnelApi, updateApi } from "./api";
+import { errorMessage, events, hostKeyApi, settingsApi, toolsApi, trafficApi, tunnelApi, updateApi } from "./api";
 import { setLanguage, t } from "./i18n";
 import type { HostKeyPrompt, Settings, SettingsInput, Traffic, TunnelView, UpdateInfo } from "./types";
 
@@ -54,6 +54,7 @@ interface SettingsCtx {
   dark: boolean;
   save: (patch: Partial<SettingsInput>) => Promise<void>;
   setAutoLaunch: (enable: boolean) => Promise<void>;
+  suspendShortcut: (suspend: boolean) => Promise<void>;
 }
 
 const SettingsContext = createContext<SettingsCtx>(null!);
@@ -101,6 +102,8 @@ function SettingsProvider({ children }: { children: ReactNode }) {
         closeToTray: settings.closeToTray,
         silentStart: settings.silentStart,
         autoCheckUpdate: settings.autoCheckUpdate,
+        toolsShortcutEnabled: settings.toolsShortcutEnabled,
+        toolsShortcut: settings.toolsShortcut,
         ...patch,
       };
       setSettings({ ...settings, ...patch });
@@ -118,7 +121,14 @@ function SettingsProvider({ children }: { children: ReactNode }) {
     setSettings(await settingsApi.setAutoLaunch(enable));
   }, []);
 
-  const value = useMemo(() => ({ settings, dark, save, setAutoLaunch }), [settings, dark, save, setAutoLaunch]);
+  const suspendShortcut = useCallback(async (suspend: boolean) => {
+    setSettings(await toolsApi.suspendShortcut(suspend));
+  }, []);
+
+  const value = useMemo(
+    () => ({ settings, dark, save, setAutoLaunch, suspendShortcut }),
+    [settings, dark, save, setAutoLaunch, suspendShortcut],
+  );
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
 }
 

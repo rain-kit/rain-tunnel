@@ -1,17 +1,18 @@
-import { ArrowDown, ArrowUp, Cable, Gauge, LayoutDashboard, ScrollText, Settings, type LucideIcon } from "lucide-react";
+import { ArrowDown, ArrowUp, Cable, Gauge, LayoutDashboard, ScrollText, Settings, Wrench, type LucideIcon } from "lucide-react";
 import { formatBytes, formatSpeed, isMac } from "../lib/format";
 import { useI18n } from "../lib/i18n";
 import { useTraffic, useTunnels, useUpdate } from "../lib/store";
 import TrafficChart from "./TrafficChart";
 import { cx } from "./ui";
 
-export type Page = "home" | "tunnels" | "connections" | "logs" | "settings";
+export type Page = "home" | "tunnels" | "connections" | "logs" | "tools" | "settings";
 
 const nav: { id: Page; icon: LucideIcon }[] = [
   { id: "home", icon: LayoutDashboard },
   { id: "tunnels", icon: Cable },
   { id: "connections", icon: Gauge },
   { id: "logs", icon: ScrollText },
+  { id: "tools", icon: Wrench },
   { id: "settings", icon: Settings },
 ];
 

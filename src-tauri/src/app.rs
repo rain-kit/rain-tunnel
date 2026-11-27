@@ -15,7 +15,7 @@ use crate::store::TunnelStore;
 use crate::traffic::TrafficService;
 use crate::update::{self, Updater};
 use crate::usage::UsageStore;
-use crate::{tray, window};
+use crate::{shortcut, tray, window};
 
 /// 每日流量写盘间隔（秒），退出时也会写一次。
 const USAGE_SAVE_SECS: u64 = 60;
@@ -60,6 +60,7 @@ pub fn setup(app: &mut App, data_dir: PathBuf, cfg: AppConfig, level: LevelHandl
         Tuning::default(),
     );
     let silent = cfg.app.silent_start;
+    let _ = shortcut::apply(&handle, cfg.app.tools_shortcut_enabled, &cfg.app.tools_shortcut);
     let usage = UsageStore::open(data_dir.join("traffic.json"));
     app.manage(AppState {
         data_dir,

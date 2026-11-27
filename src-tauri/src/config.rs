@@ -53,11 +53,21 @@ pub struct AppSection {
     pub silent_start: bool,
     /// 后台定时检查新版本；关闭后只能手动检查
     pub auto_check_update: bool,
+    /// 用全局快捷键打开工具页
+    pub tools_shortcut_enabled: bool,
+    /// 打开工具页的快捷键，写法见 shortcut 模块
+    pub tools_shortcut: String,
 }
 
 impl Default for AppSection {
     fn default() -> Self {
-        AppSection { close_to_tray: true, silent_start: false, auto_check_update: true }
+        AppSection {
+            close_to_tray: true,
+            silent_start: false,
+            auto_check_update: true,
+            tools_shortcut_enabled: true,
+            tools_shortcut: crate::shortcut::default_shortcut().into(),
+        }
     }
 }
 
@@ -152,6 +162,9 @@ pub fn load(data_dir: &Path) -> Result<AppConfig, String> {
     if !TERMINALS.contains(&cfg.ui.terminal.as_str()) {
         cfg.ui.terminal = default_terminal().into();
     }
+    if cfg.app.tools_shortcut.trim().is_empty() {
+        cfg.app.tools_shortcut = crate::shortcut::default_shortcut().into();
+    }
     Ok(cfg)
 }
 
@@ -182,6 +195,8 @@ mod tests {
         assert!(cfg.app.silent_start);
         assert!(cfg.app.close_to_tray, "缺省字段保持默认值");
         assert!(cfg.app.auto_check_update, "缺省字段保持默认值");
+        assert!(cfg.app.tools_shortcut_enabled);
+        assert_eq!(cfg.app.tools_shortcut, crate::shortcut::default_shortcut());
     }
 
     #[test]

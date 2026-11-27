@@ -1,5 +1,6 @@
-import { ArrowUpCircle, FolderOpen, Monitor, Moon, MoreHorizontal, RefreshCw, Sun } from "lucide-react";
+import { ArrowUpCircle, FolderOpen, Monitor, Moon, MoreHorizontal, RefreshCw, RotateCcw, Sun } from "lucide-react";
 import type { ReactNode } from "react";
+import ShortcutInput from "../components/ShortcutInput";
 import TitleBar from "../components/TitleBar";
 import UpdateRouteMenu from "../components/UpdateRouteMenu";
 import { Button, Card, IconButton, Menu, Segmented, Select, Switch, SwitchRow } from "../components/ui";
@@ -31,8 +32,8 @@ function Row({ title, desc, children }: { title: string; desc?: ReactNode; child
 }
 
 export default function Settings() {
-  const { t } = useI18n();
-  const { settings: s, save, setAutoLaunch } = useSettings();
+  const { t, tm } = useI18n();
+  const { settings: s, save, setAutoLaunch, suspendShortcut } = useSettings();
   const toast = useToast();
   const { info: updateInfo, checking, check, setDialogOpen } = useUpdate();
   const newVersion = updateInfo?.hasUpdate ? updateInfo.latest : undefined;
@@ -80,6 +81,46 @@ export default function Settings() {
                 onChange={(terminal) => update({ terminal })}
                 options={shellOptions().map((v) => ({ value: v, label: shellLabel[v] }))}
               />
+            </Row>
+            <Row
+              title={t("settings.toolsShortcut")}
+              desc={
+                s.toolsShortcutEnabled && s.toolsShortcutError ? (
+                  <span className="text-red-600 dark:text-red-400" title={tm(s.toolsShortcutError)}>
+                    {tm(s.toolsShortcutError)}
+                  </span>
+                ) : (
+                  t("settings.toolsShortcutDesc")
+                )
+              }
+            >
+              <div className="flex items-center gap-2">
+                {s.toolsShortcut !== s.defaultToolsShortcut && (
+                  <IconButton
+                    label={t("settings.toolsShortcut.reset")}
+                    size="sm"
+                    disabled={!s.toolsShortcutEnabled}
+                    onClick={() => update({ toolsShortcut: s.defaultToolsShortcut })}
+                  >
+                    <RotateCcw size={14} />
+                  </IconButton>
+                )}
+                <ShortcutInput
+                  value={s.toolsShortcut}
+                  disabled={!s.toolsShortcutEnabled}
+                  onRecording={(on) => suspendShortcut(on).catch(toast.error)}
+                  onChange={(toolsShortcut) =>
+                    save({ toolsShortcut })
+                      .catch(toast.error)
+                      .finally(() => suspendShortcut(false).catch(toast.error))
+                  }
+                />
+                <Switch
+                  checked={s.toolsShortcutEnabled}
+                  label={t("settings.toolsShortcut")}
+                  onChange={(toolsShortcutEnabled) => update({ toolsShortcutEnabled })}
+                />
+              </div>
             </Row>
           </Group>
 

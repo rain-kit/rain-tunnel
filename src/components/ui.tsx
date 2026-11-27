@@ -8,6 +8,7 @@ import {
   type ButtonHTMLAttributes,
   type InputHTMLAttributes,
   type ReactNode,
+  type TextareaHTMLAttributes,
 } from "react";
 import { createPortal } from "react-dom";
 import { useI18n } from "../lib/i18n";
@@ -115,8 +116,9 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   suffix?: ReactNode;
 }
 
-const inputBase =
-  "h-8.5 w-full rounded-lg border bg-surface px-2.5 text-sm text-ink outline-none transition-colors placeholder:text-muted/60 focus:border-accent focus:ring-3 focus:ring-accent/15 disabled:opacity-60";
+const fieldBase =
+  "w-full rounded-lg border bg-surface px-2.5 text-sm text-ink outline-none transition-colors placeholder:text-muted/60 focus:border-accent focus:ring-3 focus:ring-accent/15 disabled:opacity-60";
+const inputBase = `h-8.5 ${fieldBase}`;
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   { invalid, mono, suffix, className, ...rest },
@@ -143,6 +145,27 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       {input}
       <div className="absolute inset-y-0 right-1 flex items-center">{suffix}</div>
     </div>
+  );
+});
+
+interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+  invalid?: boolean;
+}
+
+export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function TextArea({ invalid, className, ...rest }, ref) {
+  return (
+    <textarea
+      ref={ref}
+      spellCheck={false}
+      autoComplete="off"
+      className={cx(
+        fieldBase,
+        "min-h-0 resize-none py-2 font-mono text-[13px] leading-relaxed",
+        invalid ? "border-red-500 focus:border-red-500 focus:ring-red-500/15" : "border-line",
+        className,
+      )}
+      {...rest}
+    />
   );
 });
 

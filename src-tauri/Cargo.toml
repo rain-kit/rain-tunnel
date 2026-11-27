@@ -1,6 +1,6 @@
 [package]
 name = "rain-tunnel"
-version = "1.0.7"
+version = "1.0.8"
 description = "SSH 隧道管理：本地、远程、动态端口转发"
 license = "MIT"
 edition = "2024"
@@ -32,6 +32,7 @@ sys-locale = "0.3.2"
 tauri = { version = "2", features = ["tray-icon", "image-png"] }
 tauri-plugin-autostart = "2"
 tauri-plugin-dialog = "2"
+tauri-plugin-global-shortcut = "2"
 tauri-plugin-opener = "2"
 tauri-plugin-single-instance = "2"
 tauri-plugin-updater = { version = "2", default-features = false, features = ["native-tls", "system-proxy"] }

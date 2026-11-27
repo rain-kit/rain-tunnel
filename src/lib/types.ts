@@ -147,6 +147,13 @@ export interface Settings {
   closeToTray: boolean;
   silentStart: boolean;
   autoCheckUpdate: boolean;
+  /** 用全局快捷键打开工具页 */
+  toolsShortcutEnabled: boolean;
+  /** 快捷键，如 "Alt+Space"、"Ctrl+Shift+KeyT"，按键名同 KeyboardEvent.code */
+  toolsShortcut: string;
+  defaultToolsShortcut: string;
+  /** 快捷键注册失败的原因 */
+  toolsShortcutError?: I18nMsg;
   autoLaunch: boolean;
   dataDir: string;
   logDir: string;
@@ -155,7 +162,15 @@ export interface Settings {
 
 export type SettingsInput = Pick<
   Settings,
-  "logLevel" | "theme" | "language" | "terminal" | "closeToTray" | "silentStart" | "autoCheckUpdate"
+  | "logLevel"
+  | "theme"
+  | "language"
+  | "terminal"
+  | "closeToTray"
+  | "silentStart"
+  | "autoCheckUpdate"
+  | "toolsShortcutEnabled"
+  | "toolsShortcut"
 >;
 
 export interface UpdateInfo {

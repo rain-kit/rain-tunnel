@@ -69,6 +69,13 @@ export const settingsApi = {
   pickKeyFile: () => invoke<string>("pick_key_file"),
 };
 
+export const toolsApi = {
+  /** 快捷键是否请求打开工具页，取出后清除。 */
+  takeOpenRequest: () => invoke<boolean>("tools_take_open_request"),
+  /** 录制快捷键期间暂停全局快捷键，结束后传 false 按设置恢复。 */
+  suspendShortcut: (suspend: boolean) => invoke<Settings>("tools_shortcut_suspend", { suspend }),
+};
+
 export const logApi = {
   list: () => invoke<LogEntry[]>("logs_list"),
   clear: () => invoke<void>("logs_clear"),
@@ -95,6 +102,7 @@ export const events = {
   onUpdate: (fn: (u: UpdateInfo) => void) => sub<UpdateInfo>("update:status", fn),
   onUpdateProgress: (fn: (p: { downloaded: number; total?: number }) => void) => sub("update:progress", fn),
   onUpdateOpen: (fn: () => void) => sub<null>("update:open", () => fn()),
+  onToolsOpen: (fn: () => void) => sub<null>("tools:open", () => fn()),
 };
 
 /** 订阅事件，返回同步的取消函数，方便在 useEffect 中直接使用。 */

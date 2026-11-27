@@ -18,7 +18,7 @@ use crate::model::{ConnectionView, HostKeyPrompt, LogEntry, SaveTunnelReq, Traff
 use crate::traffic::TrafficPoint;
 use crate::update::{self, UpdateInfo};
 use crate::usage::UsageView;
-use crate::{tray, window};
+use crate::{shortcut, tray, window};
 
 type S<'a> = State<'a, AppState>;
 
@@ -129,6 +129,11 @@ pub struct SettingsView {
     close_to_tray: bool,
     silent_start: bool,
     auto_check_update: bool,
+    tools_shortcut_enabled: bool,
+    tools_shortcut: String,
+    default_tools_shortcut: &'static str,
+    /// 快捷键注册失败的原因
+    tools_shortcut_error: Option<Msg>,
     auto_launch: bool,
     data_dir: String,
     log_dir: String,
@@ -145,6 +150,8 @@ pub struct SettingsInput {
     close_to_tray: bool,
     silent_start: bool,
     auto_check_update: bool,
+    tools_shortcut_enabled: bool,
+    tools_shortcut: String,
 }
 
 fn settings_view(app: &AppHandle, s: &AppState) -> SettingsView {
@@ -158,6 +165,10 @@ fn settings_view(app: &AppHandle, s: &AppState) -> SettingsView {
         close_to_tray: cfg.app.close_to_tray,
         silent_start: cfg.app.silent_start,
         auto_check_update: cfg.app.auto_check_update,
+        tools_shortcut_enabled: cfg.app.tools_shortcut_enabled,
+        tools_shortcut: cfg.app.tools_shortcut,
+        default_tools_shortcut: shortcut::default_shortcut(),
+        tools_shortcut_error: shortcut::last_error(),
         auto_launch: app.autolaunch().is_enabled().unwrap_or(false),
         data_dir: s.data_dir.display().to_string(),
         log_dir: s.log_dir().display().to_string(),
@@ -181,14 +192,30 @@ pub async fn settings_save(app: AppHandle, s: S<'_>, input: SettingsInput) -> Ap
     cfg.app.silent_start = input.silent_start;
     let check_enabled = input.auto_check_update && !cfg.app.auto_check_update;
     cfg.app.auto_check_update = input.auto_check_update;
+    let old_shortcut = (cfg.app.tools_shortcut_enabled, cfg.app.tools_shortcut.clone());
+    cfg.app.tools_shortcut_enabled = input.tools_shortcut_enabled;
+    cfg.app.tools_shortcut = input.tools_shortcut.trim().to_string();
     cfg.validate().map_err(|e| error::PARAM_INVALID.msg(e))?;
-    config::save(&s.data_dir, &cfg).map_err(|e| error::SETTING_SAVE_FAILED.cause(e))?;
+    let shortcut_changed = old_shortcut != (cfg.app.tools_shortcut_enabled, cfg.app.tools_shortcut.clone());
+    if shortcut_changed {
+        // 新快捷键注册不上时恢复原来的，设置不保存。
+        if let Err(e) = shortcut::apply(&app, cfg.app.tools_shortcut_enabled, &cfg.app.tools_shortcut) {
+            let _ = shortcut::apply(&app, old_shortcut.0, &old_shortcut.1);
+            return Err(e);
+        }
+    }
+    if let Err(e) = config::save(&s.data_dir, &cfg) {
+        if shortcut_changed {
+            let _ = shortcut::apply(&app, old_shortcut.0, &old_shortcut.1);
+        }
+        return Err(error::SETTING_SAVE_FAILED.cause(e));
+    }
 
     s.level.set(&cfg.system.log_level);
     window::apply_theme(&app, &cfg.ui.theme);
     i18n::set(&cfg.ui.language);
     tray::refresh_soon(&app);
-    info!(level = %cfg.system.log_level, theme = %cfg.ui.theme, language = %cfg.ui.language, terminal = %cfg.ui.terminal, close_to_tray = cfg.app.close_to_tray, silent_start = cfg.app.silent_start, auto_check_update = cfg.app.auto_check_update, "设置已保存");
+    info!(level = %cfg.system.log_level, theme = %cfg.ui.theme, language = %cfg.ui.language, terminal = %cfg.ui.terminal, close_to_tray = cfg.app.close_to_tray, silent_start = cfg.app.silent_start, auto_check_update = cfg.app.auto_check_update, tools_shortcut_enabled = cfg.app.tools_shortcut_enabled, tools_shortcut = %cfg.app.tools_shortcut, "设置已保存");
     *s.config.lock().unwrap() = cfg;
     // 重新打开时立即检查一次，后台循环最长要等 6 小时。
     if check_enabled {
@@ -268,6 +295,23 @@ pub async fn update_check(app: AppHandle, via: Option<String>) -> ApiResult<Upda
 #[tauri::command]
 pub async fn update_take_open_request(s: S<'_>) -> ApiResult<bool> {
     Ok(s.updater.take_open_request())
+}
+
+/// 是否有待打开的工具页请求（来自快捷键），取出后清除。
+#[tauri::command]
+pub async fn tools_take_open_request() -> ApiResult<bool> {
+    Ok(shortcut::take_open_request())
+}
+
+/// 设置页录制快捷键时暂时注销，避免按下当前快捷键时被系统拦截；结束后按设置重新注册。
+#[tauri::command]
+pub async fn tools_shortcut_suspend(app: AppHandle, s: S<'_>, suspend: bool) -> ApiResult<SettingsView> {
+    let (enabled, accel) = {
+        let cfg = s.config.lock().unwrap();
+        (cfg.app.tools_shortcut_enabled && !suspend, cfg.app.tools_shortcut.clone())
+    };
+    let _ = shortcut::apply(&app, enabled, &accel);
+    Ok(settings_view(&app, &s))
 }
 
 #[tauri::command]
