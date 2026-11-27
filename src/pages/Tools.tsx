@@ -89,20 +89,23 @@ export default function Tools() {
         />
       </div>
       <div className="flex min-h-0 flex-1 gap-4 px-6 pb-6">
-        <Card className="w-44 shrink-0 overflow-y-auto p-1.5">
-          {toolsIn(category).map(({ id, icon: Icon }) => (
-            <button
-              key={id}
-              onClick={() => select(id)}
-              className={cx(
-                "flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-left text-[13px] transition-colors",
-                current === id ? "bg-accent/15 font-medium dark:bg-accent/35" : "hover:bg-subtle",
-              )}
-            >
-              <Icon size={15} className="shrink-0 text-muted" />
-              <span className="truncate">{t(`tools.name.${id}`)}</span>
-            </button>
-          ))}
+        <Card className="flex w-44 shrink-0 flex-col gap-0.5 overflow-y-auto p-1.5">
+          {toolsIn(category).map(({ id, icon: Icon }) => {
+            const active = current === id;
+            return (
+              <button
+                key={id}
+                onClick={() => select(id)}
+                className={cx(
+                  "flex h-9 w-full shrink-0 items-center gap-2.5 rounded-lg px-2.5 text-left text-[13px] transition-colors",
+                  active ? "bg-accent/14 font-medium text-ink dark:bg-accent/32" : "hover:bg-subtle",
+                )}
+              >
+                <Icon size={15} className={cx("shrink-0 transition-colors", active ? "text-accent dark:text-sky-300" : "text-muted")} />
+                <span className="truncate">{t(`tools.name.${id}`)}</span>
+              </button>
+            );
+          })}
         </Card>
         <Card className="min-w-0 flex-1 overflow-y-auto p-4">
           <Tool key={current} />

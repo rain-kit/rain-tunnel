@@ -82,3 +82,15 @@
     background: transparent;
   }
 }
+
+.diff-empty {
+  background-color: color-mix(in srgb, var(--color-subtle) 55%, transparent);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 5px,
+    color-mix(in srgb, var(--color-line) 65%, transparent) 5px,
+    color-mix(in srgb, var(--color-line) 65%, transparent) 6px
+  );
+}
+
