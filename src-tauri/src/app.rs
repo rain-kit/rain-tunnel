@@ -54,7 +54,7 @@ pub fn setup(app: &mut App, data_dir: PathBuf, cfg: AppConfig, level: LevelHandl
     let host_keys = Arc::new(HostKeyStore::new(data_dir.join("known_hosts"), HostKeyStore::user_known_hosts()));
     let tunnels = TunnelService::new(
         TunnelStore::new(data_dir.join("tunnels.json")),
-        Secrets::new(Box::new(KeyringBackend)),
+        Secrets::new(Box::new(KeyringBackend::default())),
         host_keys,
         Arc::new(TauriSink(handle.clone())),
         Tuning::default(),

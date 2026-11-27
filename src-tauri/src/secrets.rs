@@ -1,5 +1,7 @@
 use std::collections::HashMap;
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex, OnceLock};
+
+use keyring_core::{CredentialStore, Entry, Error as KeyringError};
 
 use crate::config::KEYRING_PREFIX;
 use crate::model::Tunnel;
@@ -63,38 +65,61 @@ impl Secrets {
 /// 系统凭据库（Windows 凭据管理器 / macOS 钥匙串 / Linux Secret Service）。
 /// 条目命名与 v1（go-keyring）一致：服务名 "ssh-tunnel:<隧道ID>"，账户名为密码类型，
 /// Windows 上凭据名为 "服务名:账户名"，内容为 UTF-8，因此 v2 可以直接读取 v1 保存的密码。
-pub struct KeyringBackend;
+/// Linux 上不指定 target，按服务名和账户名查找，v1 和 keyring v3 保存的条目都能找到。
+#[derive(Default)]
+pub struct KeyringBackend {
+    store: OnceLock<Result<Arc<CredentialStore>, String>>,
+}
 
 impl KeyringBackend {
-    fn entry(tunnel_id: &str, kind: &str) -> keyring::Result<keyring::Entry> {
-        let service = format!("{KEYRING_PREFIX}:{tunnel_id}");
-        if cfg!(windows) {
-            keyring::Entry::new_with_target(&format!("{service}:{kind}"), &service, kind)
-        } else {
-            keyring::Entry::new(&service, kind)
-        }
+    fn store(&self) -> Result<&Arc<CredentialStore>, String> {
+        self.store.get_or_init(|| open_store().map_err(|e| e.to_string())).as_ref().map_err(Clone::clone)
     }
+
+    fn entry(&self, tunnel_id: &str, kind: &str) -> Result<Entry, String> {
+        let store = self.store()?;
+        let service = format!("{KEYRING_PREFIX}:{tunnel_id}");
+        let entry = if cfg!(windows) {
+            let target = format!("{service}:{kind}");
+            Entry::new_in_store_with_modifiers(store, &service, kind, &HashMap::from([("target", target.as_str())]))
+        } else {
+            Entry::new_in_store(store, &service, kind)
+        };
+        entry.map_err(|e| e.to_string())
+    }
+}
+
+#[cfg(windows)]
+fn open_store() -> keyring_core::Result<Arc<CredentialStore>> {
+    Ok(windows_native_keyring_store::Store::new()?)
+}
+
+#[cfg(target_os = "macos")]
+fn open_store() -> keyring_core::Result<Arc<CredentialStore>> {
+    Ok(apple_native_keyring_store::keychain::Store::new()?)
+}
+
+#[cfg(all(unix, not(target_os = "macos")))]
+fn open_store() -> keyring_core::Result<Arc<CredentialStore>> {
+    Ok(dbus_secret_service_keyring_store::Store::new()?)
 }
 
 impl SecretBackend for KeyringBackend {
     fn get(&self, tunnel_id: &str, kind: &str) -> Result<String, String> {
-        let entry = Self::entry(tunnel_id, kind).map_err(|e| e.to_string())?;
-        match entry.get_secret() {
+        match self.entry(tunnel_id, kind)?.get_secret() {
             Ok(bytes) => Ok(String::from_utf8(bytes).unwrap_or_else(|e| String::from_utf8_lossy(e.as_bytes()).into_owned())),
-            Err(keyring::Error::NoEntry) => Ok(String::new()),
+            Err(KeyringError::NoEntry) => Ok(String::new()),
             Err(e) => Err(e.to_string()),
         }
     }
 
     fn set(&self, tunnel_id: &str, kind: &str, value: &str) -> Result<(), String> {
-        let entry = Self::entry(tunnel_id, kind).map_err(|e| e.to_string())?;
-        entry.set_secret(value.as_bytes()).map_err(|e| e.to_string())
+        self.entry(tunnel_id, kind)?.set_secret(value.as_bytes()).map_err(|e| e.to_string())
     }
 
     fn delete(&self, tunnel_id: &str, kind: &str) -> Result<(), String> {
-        let entry = Self::entry(tunnel_id, kind).map_err(|e| e.to_string())?;
-        match entry.delete_credential() {
-            Ok(()) | Err(keyring::Error::NoEntry) => Ok(()),
+        match self.entry(tunnel_id, kind)?.delete_credential() {
+            Ok(()) | Err(KeyringError::NoEntry) => Ok(()),
             Err(e) => Err(e.to_string()),
         }
     }

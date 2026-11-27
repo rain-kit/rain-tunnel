@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^2.12.5",
-    "lucide-react": "^1.72.0",
+    "lucide-react": "^1.82.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-markdown": "^10.1.0",
@@ -20,12 +20,12 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.5",
-    "@tauri-apps/cli": "^2.12.5",
-    "@types/react": "^19.3.0",
+    "@tauri-apps/cli": "^2.12.6",
+    "@types/react": "^19.3.3",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.3.0",
     "tailwindcss": "^4.3.5",
     "typescript": "^7.0.2",
-    "vite": "^8.3.8"
+    "vite": "^8.4.0"
   }
 }
