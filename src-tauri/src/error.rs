@@ -77,3 +77,4 @@ pub const UPDATE_NOT_AVAILABLE: Code = Code(200005, "err.updateNotAvailable", "�
 pub const UPDATE_TUNNEL_UNAVAILABLE: Code = Code(200006, "err.updateTunnelUnavailable", "所选隧道未连接，请换一种方式重试");
 pub const SHORTCUT_INVALID: Code = Code(200007, "err.shortcutInvalid", "快捷键无效");
 pub const SHORTCUT_REGISTER_FAILED: Code = Code(200008, "err.shortcutRegisterFailed", "注册快捷键失败");
+pub const FILE_SAVE_FAILED: Code = Code(200009, "err.fileSaveFailed", "保存文件失败");

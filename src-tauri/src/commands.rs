@@ -274,6 +274,25 @@ pub async fn pick_key_file(app: AppHandle) -> ApiResult<String> {
     Ok(picked.and_then(|p| p.into_path().ok()).map(|p| p.display().to_string()).unwrap_or_default())
 }
 
+/// 弹出保存对话框，把 PNG 写到用户选择的位置；返回保存路径，取消时为空。
+#[tauri::command]
+pub async fn tools_save_png(app: AppHandle, name: String, data: Vec<u8>) -> ApiResult<String> {
+    let (tx, rx) = tokio::sync::oneshot::channel();
+    let mut dlg = app.dialog().file().set_file_name(&name).add_filter("PNG", &["png"]);
+    if let Some(dir) = dirs::download_dir().or_else(dirs::home_dir) {
+        dlg = dlg.set_directory(dir);
+    }
+    dlg.save_file(move |p| {
+        let _ = tx.send(p);
+    });
+    let Some(path) = rx.await.ok().flatten().and_then(|p| p.into_path().ok()) else {
+        return Ok(String::new());
+    };
+    std::fs::write(&path, data).map_err(|e| error::FILE_SAVE_FAILED.cause(e))?;
+    info!(path = %path.display(), "已保存图片");
+    Ok(path.display().to_string())
+}
+
 #[tauri::command]
 pub async fn logs_list() -> ApiResult<Vec<LogEntry>> {
     Ok(crate::logging::ring().list())

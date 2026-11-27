@@ -1,18 +1,35 @@
-import { Asterisk, Binary, Braces, Calculator, Clock, Fingerprint, Hash, KeyRound, Link, Network, Type, type LucideIcon } from "lucide-react";
+import {
+  Asterisk,
+  Binary,
+  Braces,
+  Calculator,
+  Clock,
+  Diff,
+  Fingerprint,
+  Hash,
+  KeyRound,
+  Link,
+  Network,
+  QrCode,
+  Type,
+  type LucideIcon,
+} from "lucide-react";
 import { useState, type ComponentType } from "react";
 import TitleBar from "../components/TitleBar";
 import { Card, cx, Segmented } from "../components/ui";
 import { useI18n } from "../lib/i18n";
 import { Base64Tool, JsonTool, UnicodeTool, UrlTool } from "./tools/codecs";
+import DiffTool from "./tools/DiffTool";
 import { PasswordTool, UuidTool } from "./tools/generators";
 import HashTool from "./tools/HashTool";
 import JwtTool from "./tools/JwtTool";
+import QrTool from "./tools/QrTool";
 import RadixTool from "./tools/RadixTool";
 import SubnetTool from "./tools/SubnetTool";
 import TimestampTool from "./tools/TimestampTool";
 
-type Category = "common" | "codec" | "crypto" | "convert" | "network";
-const categories: Category[] = ["common", "codec", "crypto", "convert", "network"];
+type Category = "common" | "codec" | "text" | "crypto" | "convert" | "network";
+const categories: Category[] = ["common", "codec", "text", "crypto", "convert", "network"];
 
 const tools = [
   { id: "json", category: "codec", icon: Braces, component: JsonTool },
@@ -20,6 +37,8 @@ const tools = [
   { id: "url", category: "codec", icon: Link, component: UrlTool },
   { id: "unicode", category: "codec", icon: Type, component: UnicodeTool },
   { id: "jwt", category: "codec", icon: KeyRound, component: JwtTool },
+  { id: "qrcode", category: "codec", icon: QrCode, component: QrTool },
+  { id: "diff", category: "text", icon: Diff, component: DiffTool },
   { id: "hash", category: "crypto", icon: Hash, component: HashTool },
   { id: "uuid", category: "crypto", icon: Fingerprint, component: UuidTool },
   { id: "password", category: "crypto", icon: Asterisk, component: PasswordTool },
@@ -30,7 +49,7 @@ const tools = [
 
 type ToolId = (typeof tools)[number]["id"];
 /** 常用分类里的工具同时也在各自的分类中。 */
-const common: ToolId[] = ["json", "uuid", "password", "timestamp"];
+const common: ToolId[] = ["json", "uuid", "password", "timestamp", "qrcode", "diff"];
 const toolsIn = (c: Category) => (c === "common" ? common.map((id) => tools.find((x) => x.id === id)!) : tools.filter((x) => x.category === c));
 
 const STORAGE_KEY = "tool";

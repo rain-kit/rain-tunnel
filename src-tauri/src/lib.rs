@@ -76,6 +76,7 @@ pub fn run() {
             commands::update_take_open_request,
             commands::tools_take_open_request,
             commands::tools_shortcut_suspend,
+            commands::tools_save_png,
             commands::update_install,
             commands::open_release_page,
         ])

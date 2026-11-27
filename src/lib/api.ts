@@ -74,6 +74,8 @@ export const toolsApi = {
   takeOpenRequest: () => invoke<boolean>("tools_take_open_request"),
   /** 录制快捷键期间暂停全局快捷键，结束后传 false 按设置恢复。 */
   suspendShortcut: (suspend: boolean) => invoke<Settings>("tools_shortcut_suspend", { suspend }),
+  /** 弹出保存对话框保存 PNG，返回保存路径，取消时为空。 */
+  savePng: (name: string, data: Uint8Array) => invoke<string>("tools_save_png", { name, data: Array.from(data) }),
 };
 
 export const logApi = {
