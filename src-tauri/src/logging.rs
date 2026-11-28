@@ -14,7 +14,7 @@ use tracing_subscriber::filter::Targets;
 use tracing_subscriber::fmt::MakeWriter;
 use tracing_subscriber::layer::{Context, SubscriberExt};
 use tracing_subscriber::util::SubscriberInitExt;
-use tracing_subscriber::{reload, Layer, Registry};
+use tracing_subscriber::Layer;
 
 use crate::model::LogEntry;
 
@@ -220,18 +220,8 @@ fn targets(level: &str) -> Targets {
     Targets::new().with_target(env!("CARGO_CRATE_NAME"), lvl).with_default(lvl.min(LevelFilter::WARN))
 }
 
-#[derive(Clone)]
-pub struct LevelHandle(reload::Handle<Targets, Registry>);
-
-impl LevelHandle {
-    pub fn set(&self, level: &str) {
-        let _ = self.0.reload(targets(level));
-    }
-}
-
 /// 初始化全局日志：写入 logs/rain-tunnel.log（JSON 行）、内存环形缓冲，调试版同时输出到控制台。
-pub fn init(log_dir: &Path, level: &str) -> LevelHandle {
-    let (filter, handle) = reload::Layer::new(targets(level));
+pub fn init(log_dir: &Path, level: &str) {
     let file = RotatingFile::new(log_dir.join(LOG_FILE));
     let file_layer = tracing_subscriber::fmt::layer()
         .json()
@@ -244,8 +234,7 @@ pub fn init(log_dir: &Path, level: &str) -> LevelHandle {
             .with_timer(tracing_subscriber::fmt::time::ChronoLocal::new("%H:%M:%S%.3f".into()))
             .with_writer(io::stderr)
     });
-    let _ = tracing_subscriber::registry().with(filter).with(file_layer).with(console).with(RingLayer).try_init();
-    LevelHandle(handle)
+    let _ = tracing_subscriber::registry().with(targets(level)).with(file_layer).with(console).with(RingLayer).try_init();
 }
 
 #[cfg(test)]

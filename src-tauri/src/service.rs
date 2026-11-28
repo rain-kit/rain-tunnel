@@ -131,7 +131,7 @@ impl TunnelService {
         Ok(list.into_iter().map(|t| self.view(t)).collect())
     }
 
-    /// 隧道名称和状态，不读凭据库，供托盘菜单频繁刷新使用。
+    /// 隧道名称和状态，不读密码，供托盘菜单频繁刷新使用。
     pub fn list_status(&self) -> Vec<(Tunnel, TunnelStatus)> {
         let list = self.store.list().unwrap_or_default();
         list.into_iter()

@@ -61,12 +61,12 @@ pub const TUNNEL_NOT_FOUND: Code = Code(100001, "err.tunnelNotFound", "隧道不
 pub const TUNNEL_INVALID: Code = Code(100002, "err.tunnelInvalid", "隧道配置无效");
 pub const TUNNEL_START_FAILED: Code = Code(100003, "err.tunnelStartFailed", "隧道启动失败");
 pub const TUNNEL_FILE_INVALID: Code = Code(100004, "err.tunnelFileInvalid", "tunnels.json 格式错误");
-pub const SECRET_STORE_FAILED: Code = Code(100005, "err.secretStoreFailed", "保存密码到系统凭据库失败");
+pub const SECRET_STORE_FAILED: Code = Code(100005, "err.secretStoreFailed", "保存密码失败");
 pub const HOST_KEY_EXPIRED: Code = Code(100006, "err.hostKeyExpired", "指纹确认请求已过期");
 pub const CONN_NOT_FOUND: Code = Code(100007, "err.connNotFound", "连接不存在或已关闭");
 pub const TUNNEL_LIST_FAILED: Code = Code(100008, "err.tunnelListFailed", "读取隧道列表失败");
 pub const TUNNEL_SAVE_FAILED: Code = Code(100009, "err.tunnelSaveFailed", "保存隧道失败");
-pub const SECRET_READ_FAILED: Code = Code(100010, "err.secretReadFailed", "读取系统凭据库失败");
+pub const SECRET_READ_FAILED: Code = Code(100010, "err.secretReadFailed", "读取已保存的密码失败");
 
 // -------------------- 设置 200000 -------------------- //
 pub const SETTING_SAVE_FAILED: Code = Code(200001, "err.settingSaveFailed", "保存设置失败");

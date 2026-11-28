@@ -1,14 +1,13 @@
-import { ArrowUpCircle, FolderOpen, Monitor, Moon, MoreHorizontal, RefreshCw, RotateCcw, Sun } from "lucide-react";
+import { ArrowUpCircle, Monitor, Moon, MoreHorizontal, RefreshCw, RotateCcw, Sun } from "lucide-react";
 import type { ReactNode } from "react";
 import ShortcutInput from "../components/ShortcutInput";
 import TitleBar from "../components/TitleBar";
 import UpdateRouteMenu from "../components/UpdateRouteMenu";
 import { Button, Card, IconButton, Menu, Segmented, Select, Switch, SwitchRow } from "../components/ui";
-import { settingsApi } from "../lib/api";
 import { shellLabel, shellOptions } from "../lib/format";
 import { useI18n, type Language } from "../lib/i18n";
 import { useSettings, useToast, useUpdate } from "../lib/store";
-import type { LogLevel, MinimizeAction, SettingsInput, ShellType, ThemeMode } from "../lib/types";
+import type { MinimizeAction, SettingsInput, ShellType, ThemeMode } from "../lib/types";
 
 function Group({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -154,36 +153,6 @@ export default function Settings() {
                 ]}
               />
             </Row>
-          </Group>
-
-          <Group title={t("settings.logs")}>
-            <Row title={t("settings.logLevel")} desc={t("settings.logLevelDesc")}>
-              <Select<LogLevel>
-                className="w-32"
-                value={s.logLevel}
-                onChange={(logLevel) => update({ logLevel })}
-                options={[
-                  { value: "debug", label: "Debug" },
-                  { value: "info", label: "Info" },
-                  { value: "warn", label: "Warn" },
-                  { value: "error", label: "Error" },
-                ]}
-              />
-            </Row>
-            <Row title={t("settings.logDir")} desc={<span className="font-mono">{s.logDir}</span>}>
-              <Button size="sm" icon={<FolderOpen size={13} />} onClick={() => settingsApi.openLogDir().catch(toast.error)}>
-                {t("common.open")}
-              </Button>
-            </Row>
-          </Group>
-
-          <Group title={t("settings.data")}>
-            <Row title={t("settings.dataDir")} desc={<span className="font-mono">{s.dataDir}</span>}>
-              <Button size="sm" icon={<FolderOpen size={13} />} onClick={() => settingsApi.openDataDir().catch(toast.error)}>
-                {t("common.open")}
-              </Button>
-            </Row>
-            <div className="text-xs leading-relaxed text-muted">{t("settings.dataNote")}</div>
           </Group>
 
           <Group title={t("settings.about")}>

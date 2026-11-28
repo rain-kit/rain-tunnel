@@ -8,8 +8,8 @@ use tracing::{error, info, warn};
 use crate::config::AppConfig;
 use crate::core::ssh::known_hosts::HostKeyStore;
 use crate::events::{self, EventSink};
-use crate::logging::{self, LevelHandle};
-use crate::secrets::{KeyringBackend, Secrets};
+use crate::logging;
+use crate::secrets::{FileBackend, Secrets};
 use crate::service::{TunnelService, Tuning};
 use crate::store::TunnelStore;
 use crate::traffic::TrafficService;
@@ -25,7 +25,6 @@ pub struct AppState {
     pub config: Mutex<AppConfig>,
     pub tunnels: Arc<TunnelService>,
     pub traffic: TrafficService,
-    pub level: LevelHandle,
     pub updater: Updater,
 }
 
@@ -48,13 +47,13 @@ impl EventSink for TauriSink {
     }
 }
 
-pub fn setup(app: &mut App, data_dir: PathBuf, cfg: AppConfig, level: LevelHandle) -> Result<(), Box<dyn std::error::Error>> {
+pub fn setup(app: &mut App, data_dir: PathBuf, cfg: AppConfig) -> Result<(), Box<dyn std::error::Error>> {
     let handle = app.handle().clone();
 
     let host_keys = Arc::new(HostKeyStore::new(data_dir.join("known_hosts"), HostKeyStore::user_known_hosts()));
     let tunnels = TunnelService::new(
         TunnelStore::new(data_dir.join("tunnels.json")),
-        Secrets::new(Box::new(KeyringBackend::default())),
+        Secrets::new(Box::new(FileBackend::open(&data_dir)?)),
         host_keys,
         Arc::new(TauriSink(handle.clone())),
         Tuning::default(),
@@ -67,7 +66,6 @@ pub fn setup(app: &mut App, data_dir: PathBuf, cfg: AppConfig, level: LevelHandl
         config: Mutex::new(cfg),
         tunnels: tunnels.clone(),
         traffic: TrafficService::new(usage),
-        level,
         updater: Updater::new(app.package_info().version.to_string()),
     });
 

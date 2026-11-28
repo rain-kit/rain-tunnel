@@ -50,7 +50,7 @@ When you run a newer Windows installer over an existing installation, it recomme
 - **Flexible authentication**: password, private key (with passphrase), or the system SSH agent.
 - **Safe by default**
   - Server fingerprints are verified on first connection and saved to `known_hosts`. Connections are refused if the fingerprint changes.
-  - Passwords are stored in the system credential store (Windows Credential Manager / macOS Keychain / Linux Secret Service), never in config files.
+  - Passwords are stored encrypted on your device, separate from tunnel definitions.
   - A proxy listening on a non-loopback address must have authentication enabled.
 - **Reliable connections**: automatic reconnect, keepalive, idle timeout and a per-tunnel connection limit.
 - **Live monitoring**: real-time traffic chart, per-tunnel traffic statistics, and a list of active connections that you can close one by one.
@@ -70,6 +70,8 @@ All data stays on your own device. The data folder is:
 | File | Contents |
 | :--- | :------- |
 | `tunnels.json` | Tunnel definitions (no passwords) |
+| `secrets.json` | Saved passwords, encrypted with AES-256-GCM |
+| `secret.key` | Key for `secrets.json`; anyone who can read both files can recover the passwords |
 | `config.yaml` | App settings |
 | `known_hosts` | Trusted server fingerprints |
 | `logs/` | Log files |

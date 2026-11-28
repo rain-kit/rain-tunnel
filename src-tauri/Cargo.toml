@@ -1,6 +1,6 @@
 [package]
 name = "rain-tunnel"
-version = "1.0.11"
+version = "1.0.12"
 description = "SSH 隧道管理：本地、远程、动态端口转发"
 license = "MIT"
 edition = "2024"
@@ -19,9 +19,9 @@ base64 = "0.23.1"
 chrono = { version = "0.4.45", features = ["serde"] }
 dirs = "7.0.0"
 hmac = "0.13.0"
-keyring-core = "1.1.0"
 memory-stats = "1.2.0"
 reqwest = { version = "0.13.5", default-features = false, features = ["json", "native-tls", "system-proxy", "socks"] }
+ring = "0.17.14"
 russh = { version = "0.65.4", default-features = false, features = ["ring", "rsa", "flate2"] }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
@@ -42,15 +42,6 @@ tokio-util = { version = "0.7.20", features = ["rt"] }
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["json", "registry", "chrono", "fmt"] }
 uuid = { version = "1.29.3", features = ["v4"] }
-
-[target.'cfg(windows)'.dependencies]
-windows-native-keyring-store = { version = "1.1.0", default-features = false }
-
-[target.'cfg(target_os = "macos")'.dependencies]
-apple-native-keyring-store = { version = "1.0.3", features = ["keychain"] }
-
-[target.'cfg(all(unix, not(target_os = "macos")))'.dependencies]
-dbus-secret-service-keyring-store = { version = "1.0.1", features = ["crypto-rust"] }
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }

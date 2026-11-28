@@ -95,7 +95,6 @@ function SettingsProvider({ children }: { children: ReactNode }) {
     async (patch: Partial<SettingsInput>) => {
       if (!settings) return;
       const input: SettingsInput = {
-        logLevel: settings.logLevel,
         theme: settings.theme,
         language: settings.language,
         terminal: settings.terminal,

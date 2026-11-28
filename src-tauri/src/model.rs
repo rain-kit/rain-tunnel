@@ -52,7 +52,7 @@ fn is_false(v: &bool) -> bool {
 }
 
 /// 一条隧道的持久化定义，每条隧道自带 SSH 服务器信息。
-/// 密码类字段不写入 tunnels.json，由 secrets 存进系统凭据库。
+/// 密码类字段不写入 tunnels.json，由 secrets 加密存进 secrets.json。
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase", default)]
 pub struct Tunnel {

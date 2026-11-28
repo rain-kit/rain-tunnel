@@ -140,7 +140,6 @@ export type ShellType = "bash" | "fish" | "nushell" | "powershell" | "cmd";
 export type MinimizeAction = "minimize" | "close";
 
 export interface Settings {
-  logLevel: LogLevel;
   theme: ThemeMode;
   language: Language;
   /** 后端识别的系统语言，系统语言不受支持时为 en。 */
@@ -158,14 +157,11 @@ export interface Settings {
   /** 快捷键注册失败的原因 */
   toolsShortcutError?: I18nMsg;
   autoLaunch: boolean;
-  dataDir: string;
-  logDir: string;
   version: string;
 }
 
 export type SettingsInput = Pick<
   Settings,
-  | "logLevel"
   | "theme"
   | "language"
   | "terminal"

@@ -48,7 +48,7 @@ Linux 上使用 `sudo apt install ./<檔名>.deb` 或 `sudo dnf install ./<檔�
 - **多種驗證方式**：密碼、私鑰（支援私鑰密碼）、系統 SSH Agent。
 - **預設安全**
   - 首次連線時驗證伺服器指紋並儲存到 `known_hosts`，指紋變更時拒絕連線。
-  - 密碼儲存在系統認證資料庫（Windows 認證管理員 / macOS 鑰匙圈 / Linux Secret Service），不寫入設定檔。
+  - 密碼加密儲存在本機，和隧道設定分開存放。
   - 代理監聽在非本機位址時，必須設定驗證。
 - **穩定連線**：斷線自動重新連線、心跳保活、閒置逾時、單條隧道最大連線數限制。
 - **即時監控**：即時流量圖、每條隧道的流量統計、作用中連線清單，可逐條中斷。
@@ -68,6 +68,8 @@ Linux 上使用 `sudo apt install ./<檔名>.deb` 或 `sudo dnf install ./<檔�
 | 檔案 | 內容 |
 | :--- | :--- |
 | `tunnels.json` | 隧道設定（不含密碼） |
+| `secrets.json` | 已儲存的密碼，以 AES-256-GCM 加密 |
+| `secret.key` | `secrets.json` 的金鑰，同時取得這兩個檔案就能解出密碼 |
 | `config.yaml` | 程式設定 |
 | `known_hosts` | 已信任的伺服器指紋 |
 | `logs/` | 日誌檔案 |

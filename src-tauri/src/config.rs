@@ -6,9 +6,8 @@ use crate::i18n::{LANGUAGES, Msg};
 use crate::util::write_file_atomic;
 
 pub const APP_NAME: &str = "Rain Tunnel";
-/// 数据目录名与钥匙串前缀沿用 v1，改动会导致已有配置和已保存的密码无法读取。
+/// 数据目录名沿用 v1，改动会导致已有配置和已保存的密码无法读取。
 pub const DATA_DIR_NAME: &str = "ssh-tunnel";
-pub const KEYRING_PREFIX: &str = "ssh-tunnel";
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", default)]

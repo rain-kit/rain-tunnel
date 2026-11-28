@@ -48,7 +48,7 @@ Linux 上用 `sudo apt install ./<文件名>.deb` 或 `sudo dnf install ./<文�
 - **多种认证方式**：密码、私钥（支持私钥密码）、系统 SSH Agent。
 - **默认安全**
   - 首次连接时校验服务器指纹并保存到 `known_hosts`，指纹变化时拒绝连接。
-  - 密码保存在系统凭据库（Windows 凭据管理器 / macOS 钥匙串 / Linux Secret Service），不写入配置文件。
+  - 密码加密保存在本机，和隧道配置分开存放。
   - 代理监听在非本机地址时，必须设置认证。
 - **稳定连接**：断线自动重连、心跳保活、空闲超时、单条隧道最大连接数限制。
 - **实时监控**：实时流量图、每条隧道的流量统计、活动连接列表，可逐条断开。
@@ -68,6 +68,8 @@ Linux 上用 `sudo apt install ./<文件名>.deb` 或 `sudo dnf install ./<文�
 | 文件 | 内容 |
 | :--- | :--- |
 | `tunnels.json` | 隧道配置（不含密码） |
+| `secrets.json` | 已保存的密码，用 AES-256-GCM 加密 |
+| `secret.key` | `secrets.json` 的密钥，同时拿到这两个文件就能解出密码 |
 | `config.yaml` | 程序设置 |
 | `known_hosts` | 已信任的服务器指纹 |
 | `logs/` | 日志文件 |

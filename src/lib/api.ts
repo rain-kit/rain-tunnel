@@ -64,7 +64,6 @@ export const settingsApi = {
   get: () => invoke<Settings>("settings_get"),
   save: (input: SettingsInput) => invoke<Settings>("settings_save", { input }),
   setAutoLaunch: (enable: boolean) => invoke<Settings>("settings_set_autolaunch", { enable }),
-  openDataDir: () => invoke<void>("open_data_dir"),
   openLogDir: () => invoke<void>("open_log_dir"),
   pickKeyFile: () => invoke<string>("pick_key_file"),
 };

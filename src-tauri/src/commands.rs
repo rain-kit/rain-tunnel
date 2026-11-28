@@ -121,7 +121,6 @@ pub async fn traffic_usage(s: S<'_>, days: u32) -> ApiResult<UsageView> {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SettingsView {
-    log_level: String,
     theme: String,
     language: String,
     system_language: &'static str,
@@ -136,15 +135,12 @@ pub struct SettingsView {
     /// 快捷键注册失败的原因
     tools_shortcut_error: Option<Msg>,
     auto_launch: bool,
-    data_dir: String,
-    log_dir: String,
     version: String,
 }
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SettingsInput {
-    log_level: String,
     theme: String,
     language: String,
     terminal: String,
@@ -159,7 +155,6 @@ pub struct SettingsInput {
 fn settings_view(app: &AppHandle, s: &AppState) -> SettingsView {
     let cfg = s.config.lock().unwrap().clone();
     SettingsView {
-        log_level: cfg.system.log_level,
         theme: cfg.ui.theme,
         language: cfg.ui.language,
         system_language: i18n::system().tag(),
@@ -173,8 +168,6 @@ fn settings_view(app: &AppHandle, s: &AppState) -> SettingsView {
         default_tools_shortcut: shortcut::default_shortcut(),
         tools_shortcut_error: shortcut::last_error(),
         auto_launch: app.autolaunch().is_enabled().unwrap_or(false),
-        data_dir: s.data_dir.display().to_string(),
-        log_dir: s.log_dir().display().to_string(),
         version: app.package_info().version.to_string(),
     }
 }
@@ -187,7 +180,6 @@ pub async fn settings_get(app: AppHandle, s: S<'_>) -> ApiResult<SettingsView> {
 #[tauri::command]
 pub async fn settings_save(app: AppHandle, s: S<'_>, input: SettingsInput) -> ApiResult<SettingsView> {
     let mut cfg: AppConfig = s.config.lock().unwrap().clone();
-    cfg.system.log_level = input.log_level;
     cfg.ui.theme = input.theme;
     cfg.ui.language = input.language;
     cfg.ui.terminal = input.terminal;
@@ -215,11 +207,10 @@ pub async fn settings_save(app: AppHandle, s: S<'_>, input: SettingsInput) -> Ap
         return Err(error::SETTING_SAVE_FAILED.cause(e));
     }
 
-    s.level.set(&cfg.system.log_level);
     window::apply_theme(&app, &cfg.ui.theme);
     i18n::set(&cfg.ui.language);
     tray::refresh_soon(&app);
-    info!(level = %cfg.system.log_level, theme = %cfg.ui.theme, language = %cfg.ui.language, terminal = %cfg.ui.terminal, close_to_tray = cfg.app.close_to_tray, minimize_action = %cfg.app.minimize_action, silent_start = cfg.app.silent_start, auto_check_update = cfg.app.auto_check_update, tools_shortcut_enabled = cfg.app.tools_shortcut_enabled, tools_shortcut = %cfg.app.tools_shortcut, "设置已保存");
+    info!(theme = %cfg.ui.theme, language = %cfg.ui.language, terminal = %cfg.ui.terminal, close_to_tray = cfg.app.close_to_tray, minimize_action = %cfg.app.minimize_action, silent_start = cfg.app.silent_start, auto_check_update = cfg.app.auto_check_update, tools_shortcut_enabled = cfg.app.tools_shortcut_enabled, tools_shortcut = %cfg.app.tools_shortcut, "设置已保存");
     *s.config.lock().unwrap() = cfg;
     // 重新打开时立即检查一次，后台循环最长要等 6 小时。
     if check_enabled {
@@ -241,18 +232,9 @@ pub async fn settings_set_autolaunch(app: AppHandle, s: S<'_>, enable: bool) -> 
 }
 
 #[tauri::command]
-pub async fn open_data_dir(app: AppHandle, s: S<'_>) -> ApiResult<()> {
-    open_dir(&app, &s.data_dir)
-}
-
-#[tauri::command]
 pub async fn open_log_dir(app: AppHandle, s: S<'_>) -> ApiResult<()> {
     let dir = s.log_dir();
     let _ = std::fs::create_dir_all(&dir);
-    open_dir(&app, &dir)
-}
-
-fn open_dir(app: &AppHandle, dir: &std::path::Path) -> ApiResult<()> {
     app.opener()
         .open_path(dir.display().to_string(), None::<&str>)
         .map_err(|e| error::OPEN_DIR_FAILED.cause(e))
