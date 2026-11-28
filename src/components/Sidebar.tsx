@@ -27,10 +27,10 @@ export default function Sidebar({ page, onChange }: { page: Page; onChange: (p: 
   return (
     <aside className="flex w-52 shrink-0 flex-col border-r border-line bg-surface/60">
       <div data-tauri-drag-region className={cx("flex items-center gap-3 px-5", isMac ? "h-14 pt-6 pb-1 box-content" : "h-16")}>
-        <img src="/logo.svg" alt="" className="pointer-events-none size-8" />
-        <span data-tauri-drag-region className="text-lg font-bold tracking-tight">
-          Rain Tunnel
-        </span>
+        <button type="button" onClick={() => onChange("home")} title={t("nav.home")} className="flex items-center gap-3 rounded-lg">
+          <img src="/logo.svg" alt="" className="pointer-events-none size-8" />
+          <span className="text-lg font-bold tracking-tight">Rain Tunnel</span>
+        </button>
       </div>
 
       <nav className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-2.5 pt-2 pb-4">
